@@ -1,0 +1,136 @@
+.login-modal-overlay{
+    position:fixed;
+    inset:0;
+  
+    background:rgba(0,0,0,.6);
+  
+    display:flex;
+    justify-content:center;
+    align-items:center;
+  
+    z-index:9999;
+  
+    backdrop-filter:blur(8px);
+  }
+  
+  .login-modal{
+    width:100%;
+    max-width:500px;
+  
+    background:white;
+  
+    border-radius:28px;
+  
+    padding:40px;
+  
+    position:relative;
+  
+    animation:modalIn .35s ease;
+  }
+  
+  .login-close-btn{
+    position:absolute;
+  
+    right:20px;
+    top:20px;
+  
+    border:none;
+    background:none;
+  
+    font-size:1.4rem;
+  
+    cursor:pointer;
+  }
+  
+  .login-header{
+    text-align:center;
+  
+    margin-bottom:30px;
+  }
+  
+  .login-header h2{
+    color:var(--primary-bg);
+  
+    margin-bottom:10px;
+  }
+  
+  .login-header p{
+    color:var(--text-secondary);
+  }
+  
+  .login-form{
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+  }
+  
+  .login-form input{
+    width:100%;
+  
+    padding:14px 16px;
+  
+    border:1px solid #ddd;
+  
+    border-radius:12px;
+  }
+  
+  .login-submit-btn{
+    padding:16px;
+  
+    border:none;
+  
+    border-radius:50px;
+  
+    background:var(--primary-bg);
+  
+    color:white;
+  
+    font-weight:700;
+  
+    cursor:pointer;
+  }
+  
+  .login-switch{
+    margin-top:25px;
+  
+    text-align:center;
+  }
+  
+  .login-switch button{
+    border:none;
+  
+    background:none;
+  
+    color:var(--primary-bg);
+  
+    font-weight:700;
+  
+    margin-left:6px;
+  
+    cursor:pointer;
+  }
+  
+  @keyframes modalIn{
+    from{
+      opacity:0;
+      transform:translateY(30px);
+    }
+    to{
+      opacity:1;
+      transform:translateY(0);
+    }
+  }
+
+  @media (max-width: 500px) {
+    .login-modal-overlay {
+      padding: 16px;
+      align-items: flex-end;
+    }
+
+    .login-modal {
+      padding: 28px 20px;
+      border-radius: 24px 24px 16px 16px;
+      max-height: 92vh;
+      overflow-y: auto;
+    }
+  }

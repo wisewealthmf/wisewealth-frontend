@@ -1,0 +1,108 @@
+.admin-dashboard {
+    min-height: 100vh;
+    padding: 100px 7% 60px;
+    background: #f5f7fb;
+  }
+  
+  .admin-dashboard h1 {
+    font-size: 2.5rem;
+    margin-bottom: 40px;
+    color: #1e293b;
+    text-align: center;
+    font-weight: 700;
+  }
+  
+  .admin-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 25px;
+  }
+  
+  .admin-card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 30px;
+    text-decoration: none;
+    color: inherit;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    border: 1px solid #e2e8f0;
+  }
+  
+  .admin-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 35px rgba(0, 0, 0, 0.12);
+  }
+  
+  .admin-card h3 {
+    font-size: 1.4rem;
+    color: #0f172a;
+    margin-bottom: 12px;
+    font-weight: 600;
+  }
+  
+  .admin-card p {
+    color: #64748b;
+    line-height: 1.6;
+    font-size: 0.95rem;
+  }
+
+  .logout-btn {
+    position: absolute;
+    top: 30px;
+    right: 30px;
+  
+    padding: 12px 24px;
+    border: none;
+    border-radius: 12px;
+  
+    background: #ef4444;
+    color: #fff;
+  
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+  
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 20px rgba(239, 68, 68, 0.25);
+  }
+  
+  .logout-btn:hover {
+    background: #dc2626;
+    transform: translateY(-2px);
+    box-shadow: 0 12px 25px rgba(239, 68, 68, 0.35);
+  }
+  
+  .logout-btn:active {
+    transform: translateY(0);
+  }
+  
+  .admin-dashboard {
+    position: relative;
+  }
+  
+  /* Tablet */
+  @media (max-width: 768px) {
+    .admin-dashboard {
+      padding: 80px 5% 40px;
+    }
+  
+    .admin-dashboard h1 {
+      font-size: 2rem;
+    }
+  }
+  
+  /* Mobile */
+  @media (max-width: 480px) {
+    .admin-grid {
+      grid-template-columns: 1fr;
+    }
+  
+    .admin-card {
+      padding: 24px;
+    }
+  
+    .admin-dashboard h1 {
+      font-size: 1.8rem;
+    }
+  }

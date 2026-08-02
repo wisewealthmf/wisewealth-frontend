@@ -1,0 +1,361 @@
+.queries-admin {
+    min-height: 100vh;
+    padding: 100px 7%;
+    background: #f5f7fb;
+  }
+  
+  .queries-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+  }
+  
+  .queries-header h1 {
+    color: #1e293b;
+    font-size: 2rem;
+  }
+  
+  .add-btn {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 10px;
+    background: #2563eb;
+    color: white;
+    cursor: pointer;
+    font-weight: 600;
+  }
+  
+  .add-btn:hover {
+    opacity: 0.9;
+  }
+  
+  .search-input {
+    width: 100%;
+    padding: 14px;
+    margin-bottom: 25px;
+    border: 1px solid #dbe2ea;
+    border-radius: 10px;
+    outline: none;
+  }
+  
+  .table-container {
+    background: white;
+    border-radius: 15px;
+    overflow-x: auto;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  thead {
+    background: #f1f5f9;
+  }
+  
+  th {
+    text-align: left;
+    padding: 18px;
+    color: #334155;
+  }
+  
+  td {
+    padding: 18px;
+    border-top: 1px solid #e2e8f0;
+  }
+  
+  .edit-btn,
+  .delete-btn {
+    border: none;
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-right: 8px;
+  }
+  
+  .edit-btn {
+    background: #f59e0b;
+    color: white;
+  }
+  
+  .delete-btn {
+    background: #ef4444;
+    color: white;
+  }
+  
+  .edit-btn:hover,
+  .delete-btn:hover {
+    opacity: 0.9;
+  }
+
+  .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-top: 25px;
+  }
+  
+  .pagination button {
+    padding: 10px 18px;
+    border: none;
+    border-radius: 8px;
+    background: #2563eb;
+    color: white;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.3s;
+  }
+  
+  .pagination button:hover:not(:disabled) {
+    background: #1d4ed8;
+  }
+  
+  .pagination button:disabled {
+    background: #cbd5e1;
+    cursor: not-allowed;
+  }
+  
+  .pagination span {
+    font-weight: 600;
+    color: #334155;
+  }
+
+  .query-form {
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 5%;
+  }
+  
+  .query-form input,
+  .query-form textarea {
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+  }
+  
+  .query-form button {
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    background: #2563eb;
+    color: white;
+    cursor: pointer;
+  }
+
+  /* Status & Category Dropdown */
+
+.query-form select {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #dbe2ea;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #334155;
+  font-size: 15px;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.query-form select:hover {
+  border-color: #2563eb;
+}
+
+.query-form select:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+/* Match Inputs */
+
+.query-form textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.query-form input,
+.query-form textarea,
+.query-form select {
+  font-family: inherit;
+  font-size: 15px;
+}
+
+/* Optional Status Colors */
+
+.query-form select option[value="Pending"] {
+  color: #f59e0b;
+}
+
+.query-form select option[value="Replied"] {
+  color: #10b981;
+}
+
+.query-form select option[value="Closed"] {
+  color: #ef4444;
+}
+
+.reply-btn {
+  background: #10b981;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-right: 8px;
+}
+
+.reply-btn:hover {
+  background: #059669;
+}
+
+.reply-modal {
+  background: white;
+  width: 90%;
+  max-width: 650px;
+  padding: 25px;
+  border-radius: 16px;
+}
+
+.reply-modal h3 {
+  margin-bottom: 20px;
+  color: #1e293b;
+}
+
+.query-preview {
+  background: #f8fafc;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #e2e8f0;
+}
+
+.query-preview p {
+  margin-top: 10px;
+  color: #475569;
+}
+
+.reply-modal textarea {
+  width: 100%;
+  min-height: 140px;
+  padding: 12px;
+  border: 1px solid #dbe2ea;
+  border-radius: 10px;
+  resize: vertical;
+  margin-bottom: 20px;
+}
+
+.send-btn {
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.send-btn:hover {
+  background: #1d4ed8;
+}
+
+  /* Delete Modal */
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.delete-modal {
+  background: #fff;
+  width: 90%;
+  max-width: 450px;
+  padding: 30px;
+  border-radius: 16px;
+  text-align: center;
+  animation: popup 0.25s ease;
+}
+
+.delete-modal h3 {
+  margin-bottom: 12px;
+  color: #1e293b;
+}
+
+.delete-modal p {
+  color: #64748b;
+  margin-bottom: 25px;
+  line-height: 1.6;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.cancel-btn,
+.confirm-delete-btn {
+  border: none;
+  padding: 12px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.cancel-btn {
+  background: #e2e8f0;
+  color: #334155;
+}
+
+.confirm-delete-btn {
+  background: #ef4444;
+  color: white;
+}
+
+.cancel-btn:hover {
+  background: #cbd5e1;
+}
+
+.confirm-delete-btn:hover {
+  background: #dc2626;
+}
+
+@keyframes popup {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+  
+  @media (max-width: 768px) {
+    .queries-header {
+      flex-direction: column;
+      gap: 15px;
+      align-items: flex-start;
+    }
+  
+    .queries-header h1 {
+      font-size: 1.6rem;
+    }
+  }

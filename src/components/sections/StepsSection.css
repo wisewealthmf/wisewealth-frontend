@@ -1,0 +1,346 @@
+.steps-section {
+  background: var(--secondary-bg);
+
+  padding: 100px 7%;
+
+  position: relative;
+
+  overflow: hidden;
+}
+
+/* BACKGROUND GLOW */
+
+.steps-section::before {
+  content: "";
+
+  position: absolute;
+
+  width: 600px;
+  height: 600px;
+
+  border-radius: 50%;
+
+  background: rgba(34, 102, 160, 0.08);
+
+  filter: blur(120px);
+
+  top: -200px;
+  right: -150px;
+
+  pointer-events: none;
+}
+
+/* HEADINGS */
+
+.section-title {
+  text-align: center;
+
+  color: var(--dark-bg);
+
+  font-size: 0.9rem;
+
+  letter-spacing: 4px;
+
+  text-transform: uppercase;
+
+  margin-bottom: 18px;
+
+  font-weight: 700;
+}
+
+.section-heading {
+  text-align: center;
+
+  font-size: clamp(1.7rem, 3vw, 3rem);
+
+  font-family: "Outfit", sans-serif;
+
+  font-weight: 700;
+
+  line-height: 1;
+
+  color: var(--primary-bg);
+
+  margin-bottom: 20px;
+
+  letter-spacing: 0px;
+}
+
+.section-subheading {
+  text-align: center;
+
+  max-width: 700px;
+
+  margin: auto;
+
+  color: var(--text-secondary);
+
+  font-size: clamp(0.9rem, 1.1vw, 1.1rem);
+
+  line-height: 1.9;
+}
+
+/* CONTAINER */
+
+.steps-container {
+  margin-top: 40px;
+
+  position: relative;
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 40px;
+}
+
+/* CENTER LINE */
+
+.steps-container::before {
+  content: "";
+
+  position: absolute;
+
+  left: 50px;
+
+  top: 0;
+  bottom: 0;
+
+  width: 2px;
+
+  background: linear-gradient(
+    to bottom,
+    rgba(34, 102, 160, 0.1),
+    rgba(34, 102, 160, 0.5),
+    rgba(34, 102, 160, 0.1)
+  );
+}
+
+/* ITEM */
+
+.step-item {
+  display: flex;
+
+  gap: 40px;
+
+  align-items: flex-start;
+
+  position: relative;
+
+  z-index: 2;
+}
+
+/* NUMBER */
+
+.step-number {
+  width: 100px;
+  height: 100px;
+
+  border-radius: 50%;
+
+  background: linear-gradient(135deg, var(--primary-bg), #163f63);
+
+  color: white;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 2rem;
+
+  font-weight: 800;
+
+  flex-shrink: 0;
+
+  box-shadow: 0 15px 40px rgba(34, 102, 160, 0.25);
+
+  position: relative;
+}
+
+/* INNER RING */
+
+.step-number::before {
+  content: "";
+
+  position: absolute;
+
+  inset: 8px;
+
+  border-radius: 50%;
+
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+/* CARD */
+
+.step-content {
+  flex: 1;
+
+  background: rgba(255, 255, 255, 0.75);
+
+  backdrop-filter: blur(18px);
+
+  border: 1px solid rgba(255, 255, 255, 0.5);
+
+  border-radius: 30px;
+
+  padding: 40px;
+
+  transition: 0.4s ease;
+
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+
+  position: relative;
+
+  overflow: hidden;
+}
+
+/* TOP LIGHT */
+
+.step-content::before {
+  content: "";
+
+  position: absolute;
+
+  width: 220px;
+  height: 220px;
+
+  border-radius: 50%;
+
+  background: rgba(34, 102, 160, 0.08);
+
+  filter: blur(80px);
+
+  top: -100px;
+  right: -100px;
+
+  opacity: 0;
+
+  transition: 0.4s ease;
+}
+
+/* HOVER */
+
+.step-item:hover .step-content {
+  transform: translateY(-6px);
+
+  border-color: rgba(34, 102, 160, 0.2);
+
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+}
+
+.step-item:hover .step-content::before {
+  opacity: 1;
+}
+
+/* TITLE */
+
+.step-title {
+  font-size: 2rem;
+
+  line-height: 1.2;
+
+  color: #111;
+
+  margin-bottom: 5px;
+
+  font-weight: 700;
+}
+
+/* SUBTITLE */
+
+.step-subtitle {
+  color: var(--primary-bg);
+
+  font-size: 1.3rem;
+
+  font-weight: 500;
+
+  margin-bottom: 10px;
+
+  letter-spacing: 0.5px;
+}
+
+/* DESCRIPTION */
+
+.step-description {
+  color: #666;
+
+  line-height: 1.9;
+
+  font-size: 1rem;
+
+  max-width: 800px;
+}
+
+/* MOBILE */
+
+@media (max-width: 768px) {
+  .steps-section {
+    padding: 80px 5%;
+  }
+
+  .section-heading {
+    font-size: 2.7rem;
+  }
+
+  .step-item {
+    gap: 20px;
+  }
+
+  .step-number {
+    width: 70px;
+    height: 70px;
+
+    font-size: 1.4rem;
+  }
+
+  .steps-container::before {
+    left: 35px;
+  }
+
+  .step-content {
+    padding: 28px;
+  }
+
+  .step-title {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .steps-section {
+    padding: 70px 16px;
+  }
+
+  .section-heading {
+    font-size: 2.1rem;
+  }
+
+  .step-item {
+    gap: 14px;
+  }
+
+  .step-number {
+    width: 54px;
+    height: 54px;
+    font-size: 1.2rem;
+  }
+
+  .steps-container::before {
+    left: 27px;
+  }
+
+  .step-content {
+    padding: 20px;
+    border-radius: 20px;
+  }
+
+  .step-title {
+    font-size: 1.25rem;
+  }
+
+  .step-subtitle {
+    font-size: 1.05rem;
+  }
+}

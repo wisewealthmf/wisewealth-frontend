@@ -1,0 +1,102 @@
+.evf-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+}
+
+.evf-input-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+/* Inherit the parent form's input style */
+.evf-input {
+  flex: 1;
+  min-width: 0;
+  /* same defaults as the rest of the site inputs */
+  padding: 10px 14px;
+  border: 1.5px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  background: #fff;
+  color: #1f2328;
+  transition: border-color 0.2s;
+  outline: none;
+}
+
+.evf-input:focus {
+  border-color: #3b82d4;
+}
+
+.evf-input-row.evf-verified .evf-input {
+  border-color: #16a34a;
+  background: #f0fdf4;
+  color: #15803d;
+}
+
+/* Status indicators */
+.evf-status {
+  flex-shrink: 0;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.evf-checking {
+  color: #6b7280;
+}
+
+.evf-tick {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #16a34a;
+  font-weight: 600;
+}
+
+.evf-tick-icon {
+  font-size: 1rem;
+}
+
+/* Verify button */
+.evf-verify-btn {
+  flex-shrink: 0;
+  padding: 8px 14px;
+  background: #3b82d4;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s;
+}
+
+.evf-verify-btn:hover:not(:disabled) {
+  background: #2563ab;
+}
+
+.evf-verify-btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+/* Hints below the field */
+.evf-hint {
+  font-size: 0.78rem;
+  color: #6b7280;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.evf-hint.evf-sent {
+  color: #16a34a;
+  font-weight: 500;
+}
+
+.evf-hint.evf-error {
+  color: #dc2626;
+}

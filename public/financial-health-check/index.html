@@ -1,0 +1,1661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WiseWealth — Wealth Reality Check</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+  :root {
+    --primary: #2266a0;
+    --primary-light: #3a7fc1;
+    --primary-pale: #d4e5f5;
+    --warm-white: #fffbf5;
+    --dark: #1e1e1e;
+    --gold: #2266a0;
+    --gold-light: #3a7fc1;
+    --muted: #6b7280;
+    --surface: #f5f0e8;
+    --border: rgba(34,102,160,0.15);
+    --success: #22a06b;
+    --warning: #e07b39;
+    --danger: #d63b3b;
+    --font-display: "Outfit", sans-serif;
+    --font-body: "Outfit", sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--warm-white);
+    color: var(--dark);
+    font-family: var(--font-body);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 50% at 10% 20%, rgba(34,102,160,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 90% 80%, rgba(201,168,76,0.05) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container { max-width: 880px; margin: 0 auto; padding: 0 24px 60px; position: relative; z-index: 1; }
+
+  header { padding: 40px 0 28px; text-align: center; }
+
+  .brand { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 14px; }
+  .brand-icon { width: 36px; height: 36px; background: var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-size: 18px; font-family: var(--font-display); font-weight: 600; }
+  .brand-name { font-family: var(--font-display); font-size: 22px; font-weight: 500; color: var(--primary); letter-spacing: 0.04em; }
+  .brand-name span { color: var(--gold); }
+  .brand-tag { font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); margin-top: -4px; }
+
+  h1 { font-family: var(--font-display); font-size: clamp(26px, 4.5vw, 38px); font-weight: 400; color: var(--dark); line-height: 1.2; margin-bottom: 8px; }
+  h1 em { font-style: italic; color: var(--primary); }
+  .subtitle { font-size: 13.5px; color: var(--muted); font-weight: 400; max-width: 480px; margin: 0 auto; }
+
+  /* progress */
+  .progress-shell { margin-top: 28px; }
+  .progress-meta { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+  .progress-step-label { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--primary); font-weight: 700; }
+  .progress-step-name { font-size: 12px; color: var(--muted); }
+  .progress-track { height: 5px; border-radius: 3px; background: var(--primary-pale); overflow: hidden; }
+  .progress-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--primary), var(--gold)); width: 4%; transition: width 0.5s cubic-bezier(.4,0,.2,1); }
+
+  .card { background: white; border: 1.5px solid var(--border); border-radius: 16px; padding: 32px; margin-top: 28px; box-shadow: 0 2px 30px rgba(34,102,160,0.05); }
+  @media (max-width: 600px) { .card { padding: 22px 18px; } }
+
+  .section { display: none; animation: fadeSlideIn 0.4s ease; }
+  .section.active { display: block; }
+  @keyframes fadeSlideIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+
+  .step-eyebrow { font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); font-weight: 700; margin-bottom: 6px; }
+  .section-title { font-family: var(--font-display); font-size: 25px; font-weight: 500; color: var(--dark); margin-bottom: 6px; }
+  .section-desc { font-size: 13px; color: var(--muted); margin-bottom: 28px; }
+
+  .input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 12px; }
+  @media (max-width: 600px) { .input-grid { grid-template-columns: 1fr; } }
+  .input-group { display: flex; flex-direction: column; gap: 6px; }
+  .input-group.full { grid-column: 1 / -1; }
+
+  label { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.07em; }
+  .hint { font-size: 11px; color: var(--muted); font-weight: 400; text-transform: none; letter-spacing: 0; margin-top: 2px; }
+
+  .input-wrap { position: relative; display: flex; align-items: center; }
+  .input-prefix { position: absolute; left: 14px; font-size: 13px; color: var(--muted); pointer-events: none; font-weight: 600; }
+
+  input[type="number"], input[type="text"], input[type="date"], input[type="email"], select, textarea {
+    width: 100%; padding: 12px 14px; border: 1.5px solid var(--border); border-radius: 9px;
+    background: white; font-family: var(--font-body); font-size: 14.5px; color: var(--dark);
+    outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  input.has-prefix { padding-left: 32px; }
+  input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
+  input:focus, select:focus, textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(34,102,160,0.1); }
+  select { cursor: pointer; }
+
+  .slider-group { display: flex; flex-direction: column; gap: 8px; }
+  .slider-header { display: flex; justify-content: space-between; align-items: center; }
+  .slider-val { font-size: 13px; font-weight: 700; color: var(--primary); background: var(--primary-pale); padding: 2px 10px; border-radius: 20px; }
+  input[type="range"] { -webkit-appearance: none; width: 100%; height: 4px; border-radius: 2px; background: var(--primary-pale); outline: none; cursor: pointer; }
+  input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; background: var(--primary); box-shadow: 0 2px 6px rgba(34,102,160,0.35); }
+
+  .radio-pills { display: flex; gap: 8px; flex-wrap: wrap; }
+  .pill { flex: 1; min-width: 100px; text-align: center; padding: 12px 10px; border: 1.5px solid var(--border); border-radius: 9px; font-size: 13px; font-weight: 600; color: var(--muted); cursor: pointer; transition: all 0.15s; user-select: none; }
+  .pill:hover { border-color: var(--primary-light); }
+  .pill.selected { background: var(--primary); border-color: var(--primary); color: white; }
+
+  .totals-bar { display: flex; justify-content: space-between; align-items: center; background: var(--surface); border-radius: 10px; padding: 14px 18px; margin: 18px 0 6px; }
+  .totals-bar .t-label { font-size: 12px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+  .totals-bar .t-value { font-family: var(--font-display); font-size: 22px; font-weight: 600; color: var(--primary); }
+
+  /* repeater tables */
+  .rep-table { width: 100%; border-collapse: collapse; margin-bottom: 14px; }
+  .rep-table th { text-align: left; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); padding: 0 8px 8px; font-weight: 700; }
+  .rep-table td { padding: 6px 8px; vertical-align: middle; }
+  .rep-table input, .rep-table select { padding: 9px 10px; font-size: 13.5px; }
+  .rep-row-remove { width: 30px; height: 30px; border-radius: 8px; border: 1.5px solid var(--border); background: white; color: var(--danger); cursor: pointer; font-size: 15px; line-height: 1; display: flex; align-items: center; justify-content: center; }
+  .rep-row-remove:hover { background: rgba(214,59,59,0.08); border-color: var(--danger); }
+  .rep-empty { font-size: 12.5px; color: var(--muted); padding: 14px 8px; font-style: italic; }
+
+  .btn-add { display: inline-flex; align-items: center; gap: 6px; padding: 10px 18px; border-radius: 8px; border: 1.5px dashed var(--primary); background: var(--primary-pale); color: var(--primary); font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.15s; }
+  .btn-add:hover { background: var(--primary); color: white; }
+
+  .conditional-block { border-left: 3px solid var(--primary-pale); padding-left: 16px; margin-top: 4px; }
+
+  .btn-row { display: flex; gap: 12px; justify-content: space-between; margin-top: 30px; }
+  .btn { padding: 12px 26px; border-radius: 9px; font-family: var(--font-body); font-size: 13.5px; font-weight: 700; cursor: pointer; transition: all 0.2s ease; border: none; letter-spacing: 0.01em; }
+  .btn-outline { background: transparent; border: 1.5px solid var(--border); color: var(--muted); }
+  .btn-outline:hover { border-color: var(--primary); color: var(--primary); }
+  .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 14px rgba(34,102,160,0.25); }
+  .btn-primary:hover { background: var(--primary-light); transform: translateY(-1px); }
+  .btn-gold { background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: #1a1000; font-weight: 700; box-shadow: 0 4px 14px rgba(201,168,76,0.3); }
+  .btn-gold:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(201,168,76,0.4); }
+
+  /* RESULTS */
+  #section-results { padding-bottom: 20px; }
+  .report-masthead { text-align: center; padding: 6px 0 10px; }
+  .report-masthead .client-name { font-family: var(--font-display); font-size: 30px; font-weight: 500; color: var(--dark); }
+  .report-masthead .report-date { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+  .score-ring-wrap { display: flex; justify-content: center; margin: 24px 0 16px; }
+  .score-ring { position: relative; width: 170px; height: 170px; }
+  .score-ring svg { transform: rotate(-90deg); width: 170px; height: 170px; }
+  .score-ring .bg-circle { fill: none; stroke: var(--primary-pale); stroke-width: 10; }
+  .score-ring .progress-circle { fill: none; stroke-width: 10; stroke-linecap: round; stroke-dasharray: 408; stroke-dashoffset: 408; transition: stroke-dashoffset 1.2s cubic-bezier(.25,.46,.45,.94); }
+  .score-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .score-number { font-family: var(--font-display); font-size: 46px; font-weight: 600; color: var(--dark); line-height: 1; }
+  .score-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-top: 2px; }
+  .score-tag-wrap { text-align: center; }
+  .score-tag { display: inline-block; padding: 5px 20px; border-radius: 20px; font-size: 12.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 8px; }
+  .score-message { font-size: 14px; color: var(--muted); max-width: 460px; margin: 0 auto; text-align: center; }
+
+  .dim-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 28px; margin-top: 10px; }
+  @media (max-width: 600px) { .dim-grid { grid-template-columns: 1fr; } }
+  .dim-row { display: flex; flex-direction: column; gap: 5px; padding: 8px 0; }
+  .dim-top { display: flex; justify-content: space-between; align-items: baseline; }
+  .dim-name { font-size: 12.5px; font-weight: 700; color: var(--dark); }
+  .dim-pct { font-size: 12.5px; font-weight: 700; }
+  .dim-bar-outer { height: 7px; border-radius: 4px; background: var(--primary-pale); overflow: hidden; }
+  .dim-bar-inner { height: 100%; border-radius: 4px; width: 0; transition: width 1.1s cubic-bezier(.25,.46,.45,.94); }
+
+  .cards-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 22px 0; }
+  @media (max-width: 700px) { .cards-grid { grid-template-columns: 1fr 1fr; } }
+  .metric-card { background: white; border: 1.5px solid var(--border); border-radius: 12px; padding: 16px 15px; position: relative; overflow: hidden; }
+  .metric-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--primary); }
+  .metric-card.success::before { background: var(--success); }
+  .metric-card.warning::before { background: var(--warning); }
+  .metric-card.danger::before { background: var(--danger); }
+  .metric-label { font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); margin-bottom: 5px; font-weight: 700; }
+  .metric-value { font-family: var(--font-display); font-size: 20px; font-weight: 600; color: var(--dark); line-height: 1.15; }
+  .metric-sub { font-size: 10.5px; color: var(--muted); margin-top: 3px; }
+
+  .analysis-block { background: white; border: 1.5px solid var(--border); border-radius: 14px; padding: 26px; margin-bottom: 18px; }
+  .analysis-block h3 { font-family: var(--font-display); font-size: 18px; font-weight: 500; color: var(--dark); margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; }
+
+  .insight-row { display: flex; align-items: flex-start; gap: 12px; padding: 9px 0; border-bottom: 1px solid rgba(0,0,0,0.04); }
+  .insight-row:last-child { border-bottom: none; }
+  .insight-icon { width: 26px; height: 26px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; }
+  .insight-icon.good { background: rgba(34,160,107,0.1); }
+  .insight-icon.warn { background: rgba(224,123,57,0.1); }
+  .insight-icon.bad { background: rgba(214,59,59,0.1); }
+  .insight-text { font-size: 13px; color: var(--dark); line-height: 1.55; }
+  .insight-text strong { font-weight: 700; }
+
+  .action-list { counter-reset: action; }
+  .action-item { display: flex; gap: 14px; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid rgba(0,0,0,0.04); }
+  .action-item:last-child { border-bottom: none; }
+  .action-num { counter-increment: action; width: 26px; height: 26px; border-radius: 50%; background: var(--primary); color: white; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .action-num::before { content: counter(action); }
+  .action-text { font-size: 13.5px; line-height: 1.5; padding-top: 2px; }
+  .action-text strong { font-weight: 700; }
+
+  .rec-block { background: linear-gradient(135deg, var(--primary) 0%, #1a4f80 100%); border-radius: 14px; padding: 28px; color: white; margin-bottom: 18px; position: relative; overflow: hidden; }
+  .rec-block::after { content: '◈'; position: absolute; right: 20px; top: 10px; font-size: 90px; opacity: 0.06; }
+  .rec-tag { display: inline-block; background: rgba(255,255,255,0.15); padding: 4px 14px; border-radius: 20px; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 12px; }
+  .rec-title { font-family: var(--font-display); font-size: 26px; font-weight: 500; margin-bottom: 10px; }
+  .rec-why { font-size: 13.5px; line-height: 1.65; opacity: 0.92; max-width: 620px; }
+
+  .goals-report-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  .goals-report-table th { text-align: left; padding: 8px; font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); border-bottom: 1.5px solid var(--border); }
+  .goals-report-table td { padding: 10px 8px; border-bottom: 1px solid rgba(0,0,0,0.05); }
+  .status-chip { font-size: 10.5px; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
+  .status-chip.ok { background: rgba(34,160,107,0.12); color: var(--success); }
+  .status-chip.risk { background: rgba(224,123,57,0.12); color: var(--warning); }
+  .status-chip.critical { background: rgba(214,59,59,0.12); color: var(--danger); }
+
+  .disclaimer { background: var(--surface); border-radius: 8px; padding: 14px 18px; font-size: 11px; color: var(--muted); line-height: 1.6; margin: 22px 0; border-left: 3px solid var(--gold); }
+  .cta-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 8px; }
+
+  footer { text-align: center; padding: 26px 0 10px; font-size: 11px; color: var(--muted); letter-spacing: 0.03em; }
+  footer strong { color: var(--primary); }
+
+  /* ── Mobile overrides ───────────────────────────────────────── */
+  @media (max-width: 520px) {
+    .container { padding: 0 14px 50px; }
+
+    header { padding: 28px 0 20px; }
+
+    h1 { font-size: clamp(22px, 6vw, 30px); }
+
+    .card { padding: 18px 14px; }
+
+    /* navigation buttons: stack vertically */
+    .btn-row {
+      flex-direction: column-reverse;
+      gap: 10px;
+      margin-top: 24px;
+    }
+    .btn-row .btn { width: 100%; text-align: center; }
+
+    .cta-row {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .cta-row .btn,
+    .cta-row a { width: 100%; text-align: center; }
+
+    /* pills: wrap nicely */
+    .radio-pills { gap: 6px; }
+    .pill { min-width: 80px; padding: 10px 8px; font-size: 12px; }
+
+    /* totals bar: stack label + value */
+    .totals-bar {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+    }
+    .totals-bar .t-value { font-size: 18px; }
+
+    /* tables: make scrollable so they don't overflow */
+    .rep-table-wrap {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* Goals table on results page: scrollable */
+    .goals-report-table { font-size: 11px; }
+
+    /* Metric cards: 2-col on small screens */
+    .cards-grid { grid-template-columns: 1fr 1fr; }
+
+    .section-title { font-size: 20px; }
+
+    /* score ring slightly smaller */
+    .score-ring, .score-ring svg { width: 140px; height: 140px; }
+    .score-number { font-size: 38px; }
+
+    .rec-title { font-size: 20px; }
+    .rec-why { font-size: 12.5px; }
+  }
+
+  /* ── Print / Save-as-PDF styles ─────────────────────────────── */
+  @media print {
+    /* Hide everything that isn't the report */
+    .steps-hide-print,
+    .btn-row,
+    .cta-row,
+    #leadModalOverlay,
+    .section:not(#section-results),
+    .card                         { display: none !important; }
+
+    /* Show the results section always when printing */
+    #section-results              { display: block !important; }
+
+    /* Page setup */
+    @page { size: A4 portrait; margin: 14mm 12mm; }
+
+    html, body {
+      background: #fff !important;
+      color: #1e1e1e !important;
+      font-size: 11pt;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    body::before { display: none !important; }
+
+    .container {
+      max-width: 100% !important;
+      padding: 0 !important;
+    }
+
+    /* Remove shadows / transitions for print */
+    .card,
+    .analysis-block,
+    .metric-card,
+    .rec-block            { box-shadow: none !important; }
+
+    /* Prevent awkward mid-element page breaks */
+    .analysis-block,
+    .metric-card,
+    .rec-block,
+    .insight-row,
+    .action-item,
+    .dim-row,
+    .goals-report-table tr { break-inside: avoid; }
+
+    /* Let big blocks start on new pages when needed */
+    .analysis-block        { break-before: auto; }
+
+    /* Score ring — keep it compact for print */
+    .score-ring-wrap       { margin: 10px 0 8px; }
+    .score-ring,
+    .score-ring svg        { width: 120px !important; height: 120px !important; }
+    .score-number          { font-size: 32pt !important; }
+
+    /* Metric cards grid: 3 per row */
+    .cards-grid            { grid-template-columns: repeat(3, 1fr) !important; gap: 8px !important; }
+
+    /* Dimension bars grid: 2 per row */
+    .dim-grid              { grid-template-columns: 1fr 1fr !important; }
+
+    /* Goals table */
+    .goals-report-table    { font-size: 9pt; }
+
+    /* Slightly reduce headings */
+    .analysis-block h3     { font-size: 13pt; }
+    .client-name           { font-size: 20pt; }
+    .rec-title             { font-size: 16pt; }
+
+    /* Disclaimer — keep visible */
+    .disclaimer            { border-left: 3px solid #2266a0 !important; background: #f5f0e8 !important; }
+
+    /* Ensure bars render at their set width (no transition needed in print) */
+    .dim-bar-inner         { transition: none !important; }
+
+    /* Header — hide progress bar in print */
+    header                 { padding: 10px 0 6px !important; }
+    .progress-shell        { display: none !important; }
+    h1, .subtitle          { display: none !important; }
+  }
+
+  /* ── Lead-gate modal ───────────────────────────────────────────── */
+  .lead-modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.55);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 9999; padding: 20px; backdrop-filter: blur(6px);
+    animation: fadeSlideIn 0.3s ease;
+  }
+  .lead-modal {
+    background: white; border-radius: 18px; padding: 36px 32px;
+    width: 100%; max-width: 420px; position: relative;
+    box-shadow: 0 8px 40px rgba(34,102,160,0.18);
+  }
+  @media (max-width: 480px) { .lead-modal { padding: 26px 20px; } }
+  .lead-modal h2 {
+    font-family: var(--font-display); font-size: 22px; font-weight: 500;
+    color: var(--dark); margin-bottom: 6px;
+  }
+  .lead-modal p {
+    font-size: 13px; color: var(--muted); margin-bottom: 22px; line-height: 1.55;
+  }
+  .lead-modal-field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 14px; }
+  .lead-modal-field label {
+    font-size: 10.5px; font-weight: 700; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.07em;
+  }
+  .lead-modal-field input {
+    padding: 12px 14px; border: 1.5px solid var(--border); border-radius: 9px;
+    font-size: 14px; font-family: var(--font-body); outline: none;
+    transition: border-color 0.2s;
+  }
+  .lead-modal-field input:focus { border-color: var(--primary); }
+  .lead-modal-field input.input-error { border-color: var(--danger); }
+  .lead-modal-err { font-size: 11.5px; color: var(--danger); margin: -8px 0 10px; }
+  .lead-modal-submit {
+    width: 100%; padding: 13px; border: none; border-radius: 9px;
+    background: var(--primary); color: white; font-size: 14px; font-weight: 700;
+    font-family: var(--font-body); cursor: pointer; margin-top: 6px;
+    transition: opacity 0.2s, transform 0.2s;
+  }
+  .lead-modal-submit:hover:not(:disabled) { opacity: 0.9; transform: translateY(-1px); }
+  .lead-modal-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+  .lead-modal-close {
+    position: absolute; top: 14px; right: 16px; background: none; border: none;
+    font-size: 18px; color: var(--muted); cursor: pointer; line-height: 1;
+  }
+  .lead-modal-close:hover { color: var(--dark); }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <header>
+    <h1 id="mainHeading">Your <em>Wealth Reality Check</em></h1>
+    <p class="subtitle" id="mainSubtitle">A comprehensive, CFP-style financial health assessment — built from your actual numbers, not guesswork.</p>
+
+    <div class="progress-shell steps-hide-print" id="progressShell">
+      <div class="progress-meta">
+        <span class="progress-step-label" id="stepLabel">Step 1 of 10</span>
+        <span class="progress-step-name" id="stepName">Personal Details</span>
+      </div>
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    </div>
+  </header>
+
+  <div class="card">
+
+  <!-- STEP 1 — PERSONAL DETAILS + FAMILY -->
+  <div class="section active" id="section-1">
+    <div class="step-eyebrow">Step 1 of 10</div>
+    <p class="section-title">Personal Details</p>
+    <p class="section-desc">Let's start with the basics — this shapes how we benchmark every number that follows.</p>
+
+    <div class="input-grid">
+      <div class="input-group full">
+        <label>Client Name *</label>
+        <input type="text" id="clientName" placeholder="e.g. Rahul Shah"
+          oninput="this.style.borderColor='';this.style.boxShadow='';if(!this.value)this.placeholder='e.g. Rahul Shah'">
+      </div>
+      <div class="input-group full">
+        <label>Email Address *</label>
+        <input type="email" id="clientEmail" placeholder="your@email.com" autocomplete="email"
+          oninput="this.style.borderColor='';this.style.boxShadow='';if(!this.value)this.placeholder='your@email.com'">
+        <span id="clientEmailErr" style="display:none;font-size:11.5px;color:var(--danger);margin-top:4px">A valid email address is required.</span>
+      </div>
+      <div class="input-group">
+        <label>Date of Birth</label>
+        <input type="date" id="dob" onchange="calcAge()">
+      </div>
+      <div class="input-group">
+        <label>Current Age</label>
+        <input type="number" id="age" placeholder="Auto-calculated" readonly style="background:#faf9f6;color:var(--muted)">
+      </div>
+      <div class="input-group">
+        <label>Marital Status</label>
+        <select id="marital" onchange="toggleSpouse()">
+          <option value="single">Single</option>
+          <option value="married">Married</option>
+        </select>
+      </div>
+      <div class="input-group" id="spouseAgeGroup" style="display:none">
+        <label>Spouse Age</label>
+        <input type="number" id="spouseAge" placeholder="30">
+      </div>
+      <div class="input-group full">
+        <label>City / Lifestyle</label>
+        <select id="city">
+          <option value="metro">Metro (Mumbai, Delhi, Bengaluru...)</option>
+          <option value="tier1" selected>Tier-1 (Surat, Pune, Ahmedabad...)</option>
+          <option value="tier2">Tier-2 / Tier-3 / Rural</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="totals-bar" style="margin-top:24px;background:transparent;border:1.5px solid var(--border);padding:14px 18px 4px">
+      <div style="width:100%">
+        <label style="display:block;margin-bottom:10px">Family Members</label>
+      </div>
+    </div>
+    <div class="rep-table-wrap">
+      <table class="rep-table" id="familyTable">
+        <thead><tr><th style="width:34%">Relationship</th><th style="width:22%">Age</th><th style="width:28%">Financially Dependent</th><th style="width:10%"></th></tr></thead>
+        <tbody id="familyTbody"></tbody>
+      </table>
+    </div>
+    <button class="btn-add" onclick="addFamilyMember()">＋ Add Family Member</button>
+
+    <div class="btn-row">
+      <span></span>
+      <button class="btn btn-primary" onclick="openLeadModal()">Continue →</button>
+    </div>
+  </div>
+
+  <!-- STEP 2 — INCOME -->
+  <div class="section" id="section-2">
+    <div class="step-eyebrow">Step 2 of 10</div>
+    <p class="section-title">Income</p>
+    <p class="section-desc">Every rupee coming in, across every source.</p>
+
+    <div class="input-grid">
+      <div class="input-group">
+        <label>Salary Income (Monthly)</label>
+        <div class="input-wrap"><span class="input-prefix">₹</span><input class="has-prefix" type="number" id="incSalary" placeholder="0" oninput="updateIncomeTotal()"></div>
+      </div>
+      <div class="input-group">
+        <label>Business Income (Monthly)</label>
+        <div class="input-wrap"><span class="input-prefix">₹</span><input class="has-prefix" type="number" id="incBusiness" placeholder="0" oninput="updateIncomeTotal()"></div>
+      </div>
+      <div class="input-group">
+        <label>Rental Income (Monthly)</label>
+        <div class="input-wrap"><span class="input-prefix">₹</span><input class="has-prefix" type="number" id="incRental" placeholder="0" oninput="updateIncomeTotal()"></div>
+      </div>
+      <div class="input-group">
+        <label>Other Income (Monthly)</label>
+        <div class="input-wrap"><span class="input-prefix">₹</span><input class="has-prefix" type="number" id="incOther" placeholder="0" oninput="updateIncomeTotal()"></div>
+      </div>
+      <div class="input-group full">
+        <div class="slider-group">
+          <div class="slider-header"><label>Expected Annual Income Growth</label><span class="slider-val" id="incGrowthVal">8%</span></div>
+          <input type="range" id="incGrowth" min="0" max="25" value="8" oninput="document.getElementById('incGrowthVal').textContent=this.value+'%'">
+        </div>
+      </div>
+    </div>
+
+    <div class="totals-bar">
+      <span class="t-label">Total Monthly Income</span>
+      <span class="t-value" id="totalIncomeDisplay">₹0</span>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-outline" onclick="goStep(1)">← Back</button>
+      <button class="btn btn-primary" onclick="goStep(3)">Continue →</button>
+    </div>
+  </div>
+
+  <!-- STEP 3 — EXPENSES -->
+  <div class="section" id="section-3">
+    <div class="step-eyebrow">Step 3 of 10</div>
+    <p class="section-title">Expenses</p>
+    <p class="section-desc">Where the money actually goes each month.</p>
+
+    <div class="input-grid">
+      <div class="input-group"><label>Household</label><div class="input-wrap"><span class="input-prefix">₹</span><input class="has-prefix" type="number" id="expHousehold" placeholder="0" oninput="updateExpenseTotal()"></div></div>
+      <div class="input-group"><label>Children Education</label><div class="input-wrap"><span class="input-prefix">₹</span><input class="has-prefix" type="number" id="expEducation" placeholder="0" oninput="updateExpenseTotal()"></div></div>
+      <div class="input-group"><label>EMIs</label><div class="input-wrap"><span class="input-prefix">₹</span><input class="has-prefix" type="number" id="expEmi" placeholder="0" oninput="updateExpenseTotal()"></div></div>
+      <div class="input-group"><label>Insurance Premiums</label><div class="input-wrap"><span class="input-prefix">₹</span><input class="has-prefix" type="number" id="expInsurance" placeholder="0" oninput="updateExpenseTotal()"></div></div>
+      <div class="input-group"><label>Medical</label><div class="input-wrap"><span class="input-prefix">₹</span><input class="has-prefix" type="number" id="expMedical" placeholder="0" oninput="updateExpenseTotal()"></div></div>
+      <div class="input-group"><label>Travel &amp; Leisure</label><div class="input-wrap"><span class="input-prefix">₹</span><input class="has-prefix" type="number" id="expTravel" placeholder="0" oninput="updateExpenseTotal()"></div></div>
+      <div class="input-group full"><label>Other Expenses</label><div class="input-wrap"><span class="input-prefix">₹</span><input class="has-prefix" type="number" id="expOther" placeholder="0" oninput="updateExpenseTotal()"></div></div>
+      <div class="input-group full">
+        <div class="slider-group">
+          <div class="slider-header"><label>Expected Expense Growth</label><span class="slider-val" id="expGrowthVal">7%</span></div>
+          <input type="range" id="expGrowth" min="0" max="20" value="7" oninput="document.getElementById('expGrowthVal').textContent=this.value+'%'">
+        </div>
+      </div>
+    </div>
+
+    <div class="totals-bar">
+      <span class="t-label">Total Monthly Expenses</span>
+      <span class="t-value" id="totalExpenseDisplay">₹0</span>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-outline" onclick="goStep(2)">← Back</button>
+      <button class="btn btn-primary" onclick="goStep(4)">Continue →</button>
+    </div>
+  </div>
+
+  <!-- STEP 4 — ASSETS -->
+  <div class="section" id="section-4">
+    <div class="step-eyebrow">Step 4 of 10</div>
+    <p class="section-title">Assets</p>
+    <p class="section-desc">Everything you currently own, across every instrument.</p>
+
+    <div class="input-grid">
+      <div class="input-group"><label>Mutual Fund Value</label><div class="input-wrap"><span class="input-prefix">₹</span><input class="has-prefix" type="number" id="astMf" placeholder="0" oninput="updateAssetTotal()"></div></div>
+      <div class="input-group"><label>Bank Balance</label><div class="input-wrap"><span class="input-prefix">₹</span><input class="has-prefix" type="number" id="astBank" placeholder="0" oninput="updateAssetTotal()"></div></div>
+      <div class="input-group"><label>Fixed Deposits</label><div class="input-wrap"><span class="input-prefix">₹</span><input class="has-prefix" type="number" id="astFd" placeholder="0" oninput="updateAssetTotal()"></div></div>
+      <div class="input-group"><label>Shares</label><div class="input-wrap"><span class="input-prefix">₹</span><input class="has-prefix" type="number" id="astShares" placeholder="0" oninput="updateAssetTotal()"></div></div>
+      <div class="input-group"><label>PPF</label><div class="input-wrap"><span class="input-prefix">₹</span><input class="has-prefix" type="number" id="astPpf" placeholder="0" oninput="updateAssetTotal()"></div></div>
+      <div class="input-group"><label>EPF</label><div class="input-wrap"><span class="input-prefix">₹</span><input class="has-prefix" type="number" id="astEpf" placeholder="0" oninput="updateAssetTotal()"></div></div>
+      <div class="input-group"><label>NPS</label><div class="input-wrap"><span class="input-prefix">₹</span><input class="has-prefix" type="number" id="astNps" placeholder="0" oninput="updateAssetTotal()"></div></div>
+      <div class="input-group"><label>Gold</label><div class="input-wrap"><span class="input-prefix">₹</span><input class="has-prefix" type="number" id="astGold" placeholder="0" oninput="updateAssetTotal()"></div></div>
+      <div class="input-group"><label>Real Estate</label><div class="input-wrap"><span class="input-prefix">₹</span><input class="has-prefix" type="number" id="astRealEstate" placeholder="0" oninput="updateAssetTotal()"></div></div>
+      <div class="input-group"><label>Other Investments</label><div class="input-wrap"><span class="input-prefix">₹</span><input class="has-prefix" type="number" id="astOther" placeholder="0" oninput="updateAssetTotal()"></div></div>
+    </div>
+
+    <div class="totals-bar">
+      <span class="t-label">Total Assets</span>
+      <span class="t-value" id="totalAssetDisplay">₹0</span>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-outline" onclick="goStep(3)">← Back</button>
+      <button class="btn btn-primary" onclick="goStep(5)">Continue →</button>
+    </div>
+  </div>
+
+  <!-- STEP 5 — LIABILITIES -->
+  <div class="section" id="section-5">
+    <div class="step-eyebrow">Step 5 of 10</div>
+    <p class="section-title">Liabilities</p>
+    <p class="section-desc">Every outstanding loan or debt obligation.</p>
+
+    <div class="input-grid">
+      <div class="input-group"><label>Home Loan</label><div class="input-wrap"><span class="input-prefix">₹</span><input class="has-prefix" type="number" id="liabHome" placeholder="0" oninput="updateLiabilityTotal()"></div></div>
+      <div class="input-group"><label>Car Loan</label><div class="input-wrap"><span class="input-prefix">₹</span><input class="has-prefix" type="number" id="liabCar" placeholder="0" oninput="updateLiabilityTotal()"></div></div>
+      <div class="input-group"><label>Personal Loan</label><div class="input-wrap"><span class="input-prefix">₹</span><input class="has-prefix" type="number" id="liabPersonal" placeholder="0" oninput="updateLiabilityTotal()"></div></div>
+      <div class="input-group"><label>Education Loan</label><div class="input-wrap"><span class="input-prefix">₹</span><input class="has-prefix" type="number" id="liabEducation" placeholder="0" oninput="updateLiabilityTotal()"></div></div>
+      <div class="input-group"><label>Credit Card Outstanding</label><div class="input-wrap"><span class="input-prefix">₹</span><input class="has-prefix" type="number" id="liabCc" placeholder="0" oninput="updateLiabilityTotal()"></div></div>
+      <div class="input-group"><label>Other Loans</label><div class="input-wrap"><span class="input-prefix">₹</span><input class="has-prefix" type="number" id="liabOther" placeholder="0" oninput="updateLiabilityTotal()"></div></div>
+    </div>
+
+    <div class="totals-bar">
+      <span class="t-label">Total Liabilities</span>
+      <span class="t-value" id="totalLiabilityDisplay">₹0</span>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-outline" onclick="goStep(4)">← Back</button>
+      <button class="btn btn-primary" onclick="goStep(6)">Continue →</button>
+    </div>
+  </div>
+
+  <!-- STEP 6 — INSURANCE -->
+  <div class="section" id="section-6">
+    <div class="step-eyebrow">Step 6 of 10</div>
+    <p class="section-title">Insurance</p>
+    <p class="section-desc">Your protection layer — often the most overlooked part of a plan.</p>
+
+    <div class="input-group full" style="margin-bottom:20px">
+      <label>Life Insurance</label>
+      <div class="radio-pills">
+        <div class="pill selected" data-group="lifeIns" data-val="yes" onclick="selectPill(this)">Yes</div>
+        <div class="pill" data-group="lifeIns" data-val="no" onclick="selectPill(this)">No</div>
+      </div>
+    </div>
+    <div class="conditional-block" id="lifeInsBlock">
+      <div class="input-grid">
+        <div class="input-group"><label>Current Cover Amount</label><div class="input-wrap"><span class="input-prefix">₹</span><input class="has-prefix" type="number" id="lifeCover" placeholder="0"></div></div>
+      </div>
+    </div>
+
+    <div class="input-group full" style="margin:24px 0 20px">
+      <label>Health Insurance</label>
+      <div class="radio-pills">
+        <div class="pill selected" data-group="healthIns" data-val="yes" onclick="selectPill(this)">Yes</div>
+        <div class="pill" data-group="healthIns" data-val="no" onclick="selectPill(this)">No</div>
+      </div>
+    </div>
+    <div class="conditional-block" id="healthInsBlock">
+      <div class="input-grid">
+        <div class="input-group"><label>Family Floater Amount</label><div class="input-wrap"><span class="input-prefix">₹</span><input class="has-prefix" type="number" id="healthCover" placeholder="0"></div></div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-outline" onclick="goStep(5)">← Back</button>
+      <button class="btn btn-primary" onclick="goStep(7)">Continue →</button>
+    </div>
+  </div>
+
+  <!-- STEP 7 — EMERGENCY FUND -->
+  <div class="section" id="section-7">
+    <div class="step-eyebrow">Step 7 of 10</div>
+    <p class="section-title">Emergency Fund</p>
+    <p class="section-desc">Your buffer against the unexpected — job loss, medical crisis, or a sudden expense.</p>
+
+    <div class="input-grid">
+      <div class="input-group full">
+        <label>Emergency Fund Available</label>
+        <div class="input-wrap"><span class="input-prefix">₹</span><input class="has-prefix" type="number" id="emergencyFund" placeholder="0" oninput="updateEmergencyMonths()"></div>
+      </div>
+    </div>
+
+    <div class="totals-bar">
+      <span class="t-label">Months of Expenses Covered</span>
+      <span class="t-value" id="emergencyMonthsDisplay">0 months</span>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-outline" onclick="goStep(6)">← Back</button>
+      <button class="btn btn-primary" onclick="goStep(8)">Continue →</button>
+    </div>
+  </div>
+
+  <!-- STEP 8 — GOALS -->
+  <div class="section" id="section-8">
+    <div class="step-eyebrow">Step 8 of 10</div>
+    <p class="section-title">Financial Goals</p>
+    <p class="section-desc">What you're building toward — each future value is projected at 7% inflation.</p>
+
+    <div class="rep-table-wrap">
+      <table class="rep-table" id="goalsTable">
+        <thead><tr><th style="width:26%">Goal Name</th><th style="width:14%">Target Year</th><th style="width:20%">Today's Cost</th><th style="width:18%">Future Cost</th><th style="width:14%">Priority</th><th style="width:8%"></th></tr></thead>
+        <tbody id="goalsTbody"></tbody>
+      </table>
+    </div>
+    <button class="btn-add" onclick="addGoal()">＋ Add Goal</button>
+
+    <div class="btn-row">
+      <button class="btn btn-outline" onclick="goStep(7)">← Back</button>
+      <button class="btn btn-primary" onclick="goStep(9)">Continue →</button>
+    </div>
+  </div>
+
+  <!-- STEP 9 — RETIREMENT -->
+  <div class="section" id="section-9">
+    <div class="step-eyebrow">Step 9 of 10</div>
+    <p class="section-title">Retirement Planning</p>
+    <p class="section-desc">Where retirement often goes wrong is underestimating how much you'll actually need.</p>
+
+    <div class="input-grid">
+      <div class="input-group">
+        <label>Retirement Age</label>
+        <input type="number" id="retireAge" placeholder="58" oninput="calcRetirementYears()">
+      </div>
+      <div class="input-group">
+        <label>Monthly Household Expense Today</label>
+        <div class="input-wrap"><span class="input-prefix">₹</span><input class="has-prefix" type="number" id="retireMonthlyExp" placeholder="0"></div>
+      </div>
+      <div class="input-group">
+        <label>Expected Pension Income (Monthly)</label>
+        <div class="input-wrap"><span class="input-prefix">₹</span><input class="has-prefix" type="number" id="pensionIncome" placeholder="0"></div>
+      </div>
+      <div class="input-group"><label>Existing Corpus — EPF</label><div class="input-wrap"><span class="input-prefix">₹</span><input class="has-prefix" type="number" id="retireEpf" placeholder="0"></div></div>
+      <div class="input-group"><label>Existing Corpus — PPF</label><div class="input-wrap"><span class="input-prefix">₹</span><input class="has-prefix" type="number" id="retirePpf" placeholder="0"></div></div>
+      <div class="input-group"><label>Existing Corpus — NPS</label><div class="input-wrap"><span class="input-prefix">₹</span><input class="has-prefix" type="number" id="retireNps" placeholder="0"></div></div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-outline" onclick="goStep(8)">← Back</button>
+      <button class="btn btn-primary" onclick="goStep(10)">Continue →</button>
+    </div>
+  </div>
+
+  <!-- STEP 10 — RISK PROFILE -->
+  <div class="section" id="section-10">
+    <div class="step-eyebrow">Step 10 of 10</div>
+    <p class="section-title">Risk Profile</p>
+    <p class="section-desc">The final piece — how you actually behave when markets get uncomfortable.</p>
+
+    <div class="input-group full" style="margin-bottom:22px">
+      <label>Investment Experience</label>
+      <div class="radio-pills">
+        <div class="pill selected" data-group="experience" data-val="beginner" onclick="selectPill(this)">Beginner</div>
+        <div class="pill" data-group="experience" data-val="moderate" onclick="selectPill(this)">Moderate</div>
+        <div class="pill" data-group="experience" data-val="experienced" onclick="selectPill(this)">Experienced</div>
+      </div>
+    </div>
+
+    <div class="input-group full" style="margin-bottom:22px">
+      <label>If the market falls 20%, you would...</label>
+      <div class="radio-pills">
+        <div class="pill" data-group="marketReaction" data-val="sell" onclick="selectPill(this)">Sell</div>
+        <div class="pill selected" data-group="marketReaction" data-val="hold" onclick="selectPill(this)">Hold</div>
+        <div class="pill" data-group="marketReaction" data-val="invest_more" onclick="selectPill(this)">Invest More</div>
+      </div>
+    </div>
+
+    <div class="input-group full" style="margin-bottom:10px">
+      <label>Risk Appetite</label>
+      <div class="radio-pills">
+        <div class="pill" data-group="riskAppetite" data-val="conservative" onclick="selectPill(this)">Conservative</div>
+        <div class="pill selected" data-group="riskAppetite" data-val="moderate" onclick="selectPill(this)">Moderate</div>
+        <div class="pill" data-group="riskAppetite" data-val="aggressive" onclick="selectPill(this)">Aggressive</div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-outline" onclick="goStep(9)">← Back</button>
+      <button class="btn btn-gold" onclick="generateReport()">✦ Generate My Wealth Reality Check</button>
+    </div>
+  </div>
+
+  </div><!-- /card -->
+
+  <!-- RESULTS -->
+  <div class="section" id="section-results">
+
+    <div class="report-masthead">
+      <div class="report-date" id="reportDate"></div>
+      <div class="client-name" id="reportClientName">Wealth Reality Check</div>
+      <div class="report-date" id="reportClientMeta"></div>
+    </div>
+
+    <div class="score-ring-wrap">
+      <div class="score-ring">
+        <svg viewBox="0 0 140 140">
+          <circle class="bg-circle" cx="70" cy="70" r="65"/>
+          <circle class="progress-circle" id="scoreCircle" cx="70" cy="70" r="65"/>
+        </svg>
+        <div class="score-center">
+          <div class="score-number" id="scoreNum">0</div>
+          <div class="score-label">/ 100</div>
+        </div>
+      </div>
+    </div>
+    <div class="score-tag-wrap">
+      <div id="scoreTag" class="score-tag"></div>
+      <p id="scoreMessage" class="score-message"></p>
+    </div>
+
+    <div class="analysis-block" style="margin-top:26px">
+      <h3>📊 Financial Health Breakdown</h3>
+      <div class="dim-grid" id="dimGrid"></div>
+    </div>
+
+    <div class="cards-grid" id="metricsGrid"></div>
+
+    <div class="analysis-block">
+      <h3>✅ What You're Doing Well</h3>
+      <div id="strengthsList"></div>
+    </div>
+
+    <div class="analysis-block">
+      <h3>⚠️ Areas to Improve</h3>
+      <div id="weaknessesList"></div>
+    </div>
+
+    <div class="analysis-block">
+      <h3>🗺️ Priority Action Plan</h3>
+      <div class="action-list" id="actionList"></div>
+    </div>
+
+
+    <div class="analysis-block">
+      <h3>🎯 Goal Analysis</h3>
+      <div style="overflow-x:auto"><table class="goals-report-table" id="goalsReportTable"></table></div>
+    </div>
+
+    <div class="analysis-block">
+      <h3>🏖️ Retirement Analysis</h3>
+      <div id="retirementAnalysis"></div>
+    </div>
+
+    <div class="disclaimer">
+      <strong>Disclaimer:</strong> This Wealth Reality Check is intended for educational purposes only and should not be considered personalized investment advice. Mutual Fund investments are subject to market risks. Read all scheme-related documents carefully before investing.
+    </div>
+
+    <div class="cta-row steps-hide-print">
+      <button class="btn btn-outline" onclick="restart()">← Start Over</button>
+      <button class="btn btn-primary" id="saveReportBtn" onclick="saveReportPdf()">🖨️ Save as PDF</button>
+      <a href="https://www.topmate.io/wisewealth" target="_parent" style="text-decoration: none;"><button class="btn btn-primary">📅 Book 1:1 Wealth Consultation</button></a>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- ── Lead-gate modal ───────────────────────────────────────────── -->
+<div class="lead-modal-overlay" id="leadModalOverlay" style="display:none">
+  <div class="lead-modal">
+    <button class="lead-modal-close" onclick="closeLeadModal()" aria-label="Close">✕</button>
+    <h2>Before We Continue</h2>
+    <p>Enter your email to unlock your personalised Wealth Reality Check. We'll also send you relevant financial insights.</p>
+
+    <div class="lead-modal-field">
+      <label>Email Address *</label>
+      <input type="email" id="leadEmail" placeholder="your@email.com" autocomplete="email">
+    </div>
+    <div id="leadEmailErr" class="lead-modal-err" style="display:none">A valid email address is required.</div>
+
+    <button class="lead-modal-submit" id="leadSubmitBtn" onclick="submitLeadModal()">Continue to Assessment →</button>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   CONFIG
+   CRA substitutes %REACT_APP_API_BASE_URL% at build time (npm run build).
+   The || fallback covers local development (npm start) where the token
+   is served as a literal string by the dev server if the env var is unset.
+   ============================================================ */
+const API_BASE = (function () {
+  const injected = '%REACT_APP_API_BASE_URL%';
+  // If CRA has NOT substituted the token (local dev without .env),
+  // the string is still the literal placeholder — fall back to localhost.
+  return injected.startsWith('%') ? 'http://localhost:8080/api/v1' : injected;
+})();
+
+/* ============================================================
+   LEAD STATE
+   ============================================================ */
+let capturedLeadId   = null;   // set after successful /wealth-check/leads call
+let capturedLeadEmail = '';    // used for PDF filename
+
+/* ============================================================
+   LEAD MODAL
+   ============================================================ */
+function openLeadModal() {
+  // Validate clientName (Step 1)
+  const nameVal  = el('clientName').value.trim();
+  const emailVal = el('clientEmail').value.trim();
+  const emailRe  = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  let valid = true;
+
+  if (!nameVal) {
+    el('clientName').focus();
+    el('clientName').style.borderColor = 'var(--danger)';
+    el('clientName').style.boxShadow = '0 0 0 3px rgba(214,59,59,0.12)';
+    el('clientName').placeholder = 'Name is required';
+    valid = false;
+  }
+  if (!emailVal || !emailRe.test(emailVal)) {
+    if (valid) el('clientEmail').focus();   // only steal focus if name was ok
+    el('clientEmail').style.borderColor = 'var(--danger)';
+    el('clientEmail').style.boxShadow = '0 0 0 3px rgba(214,59,59,0.12)';
+    el('clientEmailErr').style.display = 'block';
+    valid = false;
+  } else {
+    el('clientEmail').style.borderColor = '';
+    el('clientEmail').style.boxShadow = '';
+    el('clientEmailErr').style.display = 'none';
+  }
+  if (!valid) return;
+
+  // Both fields valid — capture and proceed directly to Step 2
+  capturedLeadEmail = emailVal;
+  submitStep1Lead(nameVal, emailVal);
+}
+
+async function submitStep1Lead(nameVal, emailVal) {
+  try {
+    const res = await fetch(API_BASE + '/wealth-check/leads', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: nameVal, email: emailVal }),
+    });
+    if (res.ok) {
+      const data = await res.json();
+      capturedLeadId    = data.id;
+      capturedLeadEmail = emailVal;
+    }
+  } catch (_) { /* network error — still let through */ }
+  goStep(2);
+}
+
+function closeLeadModal() {
+  el('leadModalOverlay').style.display = 'none';
+}
+
+async function submitLeadModal() {
+  // Modal is no longer used for primary lead capture (both fields are on Step 1).
+  // This is kept as a fallback — reads from the modal's email field if somehow invoked.
+  const nameVal  = el('clientName').value.trim();
+  const emailVal = el('leadEmail').value.trim();
+  let valid = true;
+
+  const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailVal || !emailRe.test(emailVal)) {
+    el('leadEmailErr').style.display = 'block';
+    el('leadEmail').classList.add('input-error');
+    valid = false;
+  } else {
+    el('leadEmailErr').style.display = 'none';
+    el('leadEmail').classList.remove('input-error');
+  }
+  if (!valid) return;
+
+  const btn = el('leadSubmitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Saving…';
+
+  try {
+    const res = await fetch(API_BASE + '/wealth-check/leads', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: nameVal, email: emailVal }),
+    });
+    if (res.ok) {
+      const data = await res.json();
+      capturedLeadId    = data.id;
+      capturedLeadEmail = emailVal;
+    }
+  } catch (_) { /* network error — still let through */ }
+
+  closeLeadModal();
+  goStep(2);
+}
+
+// allow Enter key in modal inputs
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && el('leadModalOverlay').style.display === 'flex') {
+    submitLeadModal();
+  }
+});
+
+/* ============================================================
+   PDF SAVE
+   • User download  → window.print()  (native, perfect quality)
+   • Server backup  → html2pdf blob   (high-res, uploaded silently)
+   ============================================================ */
+function saveReportPdf() {
+  /* 1. Freeze animated bars so both paths capture final widths. */
+  document.querySelectorAll('.dim-bar-inner').forEach(function (b) {
+    var finalWidth = b.style.width || (b.dataset.val ? b.dataset.val + '%' : '0%');
+    b.style.transition = 'none';
+    b.style.width = finalWidth;
+  });
+
+  /* 2. Re-apply score-ring offset inline (safety). */
+  var circle = el('scoreCircle');
+  if (circle) {
+    circle.style.strokeDashoffset = circle.style.strokeDashoffset;
+  }
+
+  /* 3. Open the browser's print → Save as PDF dialog for the user. */
+  setTimeout(function () { window.print(); }, 80);
+
+  /* 4. Silently generate a high-quality PDF blob and upload it
+        to the server in the background — does not block the user. */
+  if (capturedLeadId) {
+    uploadReportInBackground();
+  }
+}
+
+function uploadReportInBackground() {
+  var reportEl = el('section-results');
+  if (!reportEl || typeof html2canvas === 'undefined') return;
+
+  /* The results section is already fully rendered and visible on screen
+     when the user clicks Save. Capture it directly with html2canvas —
+     no cloning, no off-screen containers, no positioning tricks needed.
+     Hide the CTA buttons so they don't appear in the image.            */
+  var ctaRow = reportEl.querySelector('.cta-row');
+  if (ctaRow) ctaRow.style.visibility = 'hidden';
+
+  html2canvas(reportEl, {
+    scale:           2,
+    useCORS:         true,
+    logging:         false,
+    backgroundColor: '#ffffff',
+  }).then(function (canvas) {
+
+    /* Restore buttons immediately after capture. */
+    if (ctaRow) ctaRow.style.visibility = '';
+
+    /* Build a PDF from the canvas using jsPDF directly — no html2pdf wrapper.
+       Fit the canvas image into an A4 page preserving aspect ratio.          */
+    var jsPDFCtor = (window.jspdf && window.jspdf.jsPDF) || window.jsPDF;
+    if (!jsPDFCtor) {
+      console.warn('jsPDF not available — skipping server upload');
+      return;
+    }
+
+    var imgData   = canvas.toDataURL('image/jpeg', 0.92);
+    var pxW       = canvas.width;
+    var pxH       = canvas.height;
+
+    /* A4 in mm: 210 × 297. Use 6 mm margin on each side. */
+    var pageW     = 210;
+    var pageH     = 297;
+    var marginMm  = 6;
+    var printableW = pageW - marginMm * 2;          /* 198 mm */
+    var imgHmm    = (pxH / pxW) * printableW;       /* keep aspect ratio */
+
+    var pdf = new jsPDFCtor({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+
+    /* If the content is taller than one page, split across multiple pages. */
+    var pageContentH = pageH - marginMm * 2;        /* 285 mm per page */
+    var yOffset = 0;
+    while (yOffset < imgHmm) {
+      if (yOffset > 0) pdf.addPage();
+      pdf.addImage(imgData, 'JPEG', marginMm, marginMm - yOffset, printableW, imgHmm);
+      yOffset += pageContentH;
+    }
+
+    var pdfBlob = pdf.output('blob');
+    var safeEmail = capturedLeadEmail.replace(/[^a-z0-9@._-]/gi, '_');
+    var formData  = new FormData();
+    formData.append('leadId', String(capturedLeadId));
+    formData.append('email',  capturedLeadEmail);
+    formData.append('file',   pdfBlob, capturedLeadId + '_' + safeEmail + '.pdf');
+
+    fetch(API_BASE + '/wealth-check/report', {
+      method: 'POST',
+      body:   formData,
+    }).then(function (res) {
+      if (res && !res.ok) {
+        console.warn('Wealth-check report upload returned non-OK status:', res.status);
+      }
+    }).catch(function (err) {
+      console.warn('Background PDF upload failed (user download unaffected):', err);
+    });
+
+  }).catch(function (err) {
+    if (ctaRow) ctaRow.style.visibility = '';
+    console.warn('Background report capture failed:', err);
+  });
+}
+
+/* ============================================================
+   STATE
+   ============================================================ */
+let familyMembers = [];
+let goals = [];
+let famIdCounter = 0;
+let goalIdCounter = 0;
+const TOTAL_STEPS = 10;
+const STEP_NAMES = {
+  1:'Personal Details', 2:'Income', 3:'Expenses', 4:'Assets', 5:'Liabilities',
+  6:'Insurance', 7:'Emergency Fund', 8:'Goals', 9:'Retirement', 10:'Risk Profile'
+};
+
+/* ============================================================
+   HELPERS
+   ============================================================ */
+const el = (id) => document.getElementById(id);
+const v = (id, def = 0) => parseFloat(el(id)?.value) || def;
+const txt = (id, def = '') => el(id)?.value || def;
+
+function fmt(n) {
+  n = Math.round(n || 0);
+  const neg = n < 0; n = Math.abs(n);
+  let out;
+  if (n >= 1e7) out = '₹' + (n / 1e7).toFixed(2) + ' Cr';
+  else if (n >= 1e5) out = '₹' + (n / 1e5).toFixed(2) + ' L';
+  else out = '₹' + n.toLocaleString('en-IN');
+  return (neg ? '-' : '') + out;
+}
+function clamp(n, lo = 0, hi = 100) { return Math.max(lo, Math.min(hi, n)); }
+
+/* ============================================================
+   NAVIGATION
+   ============================================================ */
+function goStep(n) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  el('section-' + n).classList.add('active');
+  el('stepLabel').textContent = 'Step ' + n + ' of ' + TOTAL_STEPS;
+  el('stepName').textContent = STEP_NAMES[n];
+  el('progressFill').style.width = Math.max(4, (n / TOTAL_STEPS) * 100) + '%';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function restart() {
+  if (!confirm('Start over? All entered data will be cleared.')) return;
+  document.querySelectorAll('input[type="number"], input[type="text"], input[type="date"]').forEach(i => i.value = '');
+  familyMembers = []; goals = [];
+  renderFamilyTable(); renderGoalsTable();
+  updateIncomeTotal(); updateExpenseTotal(); updateAssetTotal(); updateLiabilityTotal(); updateEmergencyMonths();
+  document.querySelectorAll('.pill').forEach(p => p.classList.remove('selected'));
+  document.querySelectorAll('.radio-pills .pill:first-child').forEach(p => p.classList.add('selected'));
+  el('spouseAgeGroup').style.display = 'none';
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  el('section-1').classList.add('active');
+  goStep(1);
+}
+
+/* ============================================================
+   PERSONAL / STEP 1
+   ============================================================ */
+function calcAge() {
+  const dobVal = el('dob').value;
+  if (!dobVal) return;
+  const dob = new Date(dobVal);
+  const today = new Date();
+  let age = today.getFullYear() - dob.getFullYear();
+  const m = today.getMonth() - dob.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) age--;
+  el('age').value = age;
+}
+
+function toggleSpouse() {
+  el('spouseAgeGroup').style.display = el('marital').value === 'married' ? 'flex' : 'none';
+}
+
+function selectPill(node) {
+  const group = node.dataset.group;
+  document.querySelectorAll('.pill[data-group="' + group + '"]').forEach(p => p.classList.remove('selected'));
+  node.classList.add('selected');
+  if (group === 'lifeIns') el('lifeInsBlock').style.display = node.dataset.val === 'yes' ? 'block' : 'none';
+  if (group === 'healthIns') el('healthInsBlock').style.display = node.dataset.val === 'yes' ? 'block' : 'none';
+}
+function getPillVal(group) {
+  const active = document.querySelector('.pill[data-group="' + group + '"].selected');
+  return active ? active.dataset.val : null;
+}
+
+/* ---- family members repeater ---- */
+function addFamilyMember() {
+  famIdCounter++;
+  familyMembers.push({ id: famIdCounter, relationship: '', age: '', dependent: 'yes' });
+  renderFamilyTable();
+}
+function removeFamilyMember(id) {
+  familyMembers = familyMembers.filter(f => f.id !== id);
+  renderFamilyTable();
+}
+function updateFamilyField(id, field, value) {
+  const f = familyMembers.find(f => f.id === id);
+  if (f) f[field] = value;
+}
+function renderFamilyTable() {
+  const tbody = el('familyTbody');
+  if (familyMembers.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="4" class="rep-empty">No family members added yet.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = familyMembers.map(f => `
+    <tr>
+      <td><input type="text" placeholder="e.g. Spouse, Child, Parent" value="${f.relationship}" oninput="updateFamilyField(${f.id},'relationship',this.value)"></td>
+      <td><input type="number" placeholder="Age" value="${f.age}" oninput="updateFamilyField(${f.id},'age',this.value)"></td>
+      <td>
+        <select onchange="updateFamilyField(${f.id},'dependent',this.value)">
+          <option value="yes" ${f.dependent === 'yes' ? 'selected' : ''}>Yes</option>
+          <option value="no" ${f.dependent === 'no' ? 'selected' : ''}>No</option>
+        </select>
+      </td>
+      <td><button class="rep-row-remove" onclick="removeFamilyMember(${f.id})">✕</button></td>
+    </tr>
+  `).join('');
+}
+
+/* ============================================================
+   INCOME / EXPENSES / ASSETS / LIABILITIES — running totals
+   ============================================================ */
+function totalIncome() { return v('incSalary') + v('incBusiness') + v('incRental') + v('incOther'); }
+function updateIncomeTotal() { el('totalIncomeDisplay').textContent = fmt(totalIncome()); }
+
+function totalExpenses() { return v('expHousehold') + v('expEducation') + v('expEmi') + v('expInsurance') + v('expMedical') + v('expTravel') + v('expOther'); }
+function updateExpenseTotal() { el('totalExpenseDisplay').textContent = fmt(totalExpenses()); updateEmergencyMonths(); }
+
+function totalAssets() { return v('astMf') + v('astBank') + v('astFd') + v('astShares') + v('astPpf') + v('astEpf') + v('astNps') + v('astGold') + v('astRealEstate') + v('astOther'); }
+function updateAssetTotal() { el('totalAssetDisplay').textContent = fmt(totalAssets()); }
+
+function totalLiabilities() { return v('liabHome') + v('liabCar') + v('liabPersonal') + v('liabEducation') + v('liabCc') + v('liabOther'); }
+function updateLiabilityTotal() { el('totalLiabilityDisplay').textContent = fmt(totalLiabilities()); }
+
+function updateEmergencyMonths() {
+  const exp = totalExpenses();
+  const fund = v('emergencyFund');
+  const months = exp > 0 ? (fund / exp) : 0;
+  el('emergencyMonthsDisplay').textContent = months.toFixed(1) + ' months';
+}
+
+/* ============================================================
+   GOALS repeater
+   ============================================================ */
+function addGoal() {
+  goalIdCounter++;
+  const currentYear = new Date().getFullYear();
+  goals.push({ id: goalIdCounter, name: '', targetYear: currentYear + 5, amountToday: '', priority: 'high' });
+  renderGoalsTable();
+}
+function removeGoal(id) {
+  goals = goals.filter(g => g.id !== id);
+  renderGoalsTable();
+}
+function updateGoalField(id, field, value) {
+  const g = goals.find(g => g.id === id);
+  if (g) { g[field] = value; refreshGoalRow(id); }
+}
+function goalFutureValue(amountToday, yearsLeft) {
+  return amountToday * Math.pow(1.07, Math.max(yearsLeft, 0));
+}
+function renderGoalsTable() {
+  const tbody = el('goalsTbody');
+  const currentYear = new Date().getFullYear();
+  if (goals.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="6" class="rep-empty">No goals added yet — add your first goal above.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = goals.map(g => {
+    const yearsLeft = Math.max((parseInt(g.targetYear) || currentYear) - currentYear, 0);
+    const fv = goalFutureValue(parseFloat(g.amountToday) || 0, yearsLeft);
+    return `
+    <tr data-goal-row="${g.id}">
+      <td><input type="text" placeholder="e.g. Child Education" value="${g.name}" oninput="updateGoalFieldSilent(${g.id},'name',this.value)"></td>
+      <td><input type="number" value="${g.targetYear}" oninput="updateGoalField(${g.id},'targetYear',this.value)"></td>
+      <td><div class="input-wrap"><span class="input-prefix">₹</span><input class="has-prefix" type="number" placeholder="0" value="${g.amountToday}" oninput="updateGoalField(${g.id},'amountToday',this.value)"></div></td>
+      <td style="font-weight:700;color:var(--primary)" id="goal-fv-${g.id}">${fmt(fv)}<div style="font-size:10px;color:var(--muted);font-weight:400">${yearsLeft} yrs left</div></td>
+      <td>
+        <select onchange="updateGoalField(${g.id},'priority',this.value)">
+          <option value="high" ${g.priority === 'high' ? 'selected' : ''}>High</option>
+          <option value="medium" ${g.priority === 'medium' ? 'selected' : ''}>Medium</option>
+          <option value="low" ${g.priority === 'low' ? 'selected' : ''}>Low</option>
+        </select>
+      </td>
+      <td><button class="rep-row-remove" onclick="removeGoal(${g.id})">✕</button></td>
+    </tr>`;
+  }).join('');
+}
+function updateGoalFieldSilent(id, field, value) {
+  const g = goals.find(g => g.id === id);
+  if (g) g[field] = value;
+}
+// Updates only the Future Cost cell for a single row, instead of rebuilding
+// the whole table — rebuilding on every keystroke was resetting input focus
+// after one character, which made the "Today's Cost" field look uneditable.
+function refreshGoalRow(id) {
+  const g = goals.find(g => g.id === id);
+  if (!g) return;
+  const currentYear = new Date().getFullYear();
+  const yearsLeft = Math.max((parseInt(g.targetYear) || currentYear) - currentYear, 0);
+  const fv = goalFutureValue(parseFloat(g.amountToday) || 0, yearsLeft);
+  const cell = el('goal-fv-' + id);
+  if (cell) cell.innerHTML = `${fmt(fv)}<div style="font-size:10px;color:var(--muted);font-weight:400">${yearsLeft} yrs left</div>`;
+}
+
+function calcRetirementYears() { /* reserved for future live display */ }
+
+/* ============================================================
+   SIP MATH
+   ============================================================ */
+function requiredSip(target, annualRate, years) {
+  const r = annualRate / 100 / 12;
+  const n = Math.max(years, 0) * 12;
+  if (n <= 0) return target;
+  if (r === 0) return target / n;
+  return target / (((Math.pow(1 + r, n) - 1) / r) * (1 + r));
+}
+function fvOfLumpsum(amount, annualRate, years) {
+  return amount * Math.pow(1 + annualRate / 100, Math.max(years, 0));
+}
+function fvOfSip(monthly, annualRate, years) {
+  const r = annualRate / 100 / 12;
+  const n = Math.max(years, 0) * 12;
+  if (n <= 0) return 0;
+  if (r === 0) return monthly * n;
+  return monthly * ((Math.pow(1 + r, n) - 1) / r) * (1 + r);
+}
+
+/* ============================================================
+   MAIN REPORT ENGINE
+   ============================================================ */
+function generateReport() {
+  // ---- gather all inputs ----
+  const clientName = txt('clientName', 'Valued Client');
+  const age = v('age', 30);
+  const marital = txt('marital', 'single');
+  const city = txt('city', 'tier1');
+
+  const income = totalIncome();
+  const incomeGrowth = v('incGrowth', 8);
+  const expenses = totalExpenses();
+  const expenseGrowth = v('expGrowth', 7);
+  const assets = totalAssets();
+  const liabilities = totalLiabilities();
+  const netWorth = assets - liabilities;
+
+  const lifeInsYes = getPillVal('lifeIns') === 'yes';
+  const lifeCover = lifeInsYes ? v('lifeCover') : 0;
+  const healthInsYes = getPillVal('healthIns') === 'yes';
+  const healthCover = healthInsYes ? v('healthCover') : 0;
+
+  const emergencyFund = v('emergencyFund');
+  const emergencyMonths = expenses > 0 ? emergencyFund / expenses : 0;
+
+  const retireAge = v('retireAge', 58);
+  const yearsToRetire = Math.max(retireAge - age, 1);
+  const retireMonthlyExp = v('retireMonthlyExp', expenses);
+  const pensionIncome = v('pensionIncome');
+  const retireEpf = v('retireEpf');
+  const retirePpf = v('retirePpf');
+  const retireNps = v('retireNps');
+  const existingRetireCorpus = retireEpf + retirePpf + retireNps;
+
+  const experience = getPillVal('experience') || 'beginner';
+  const marketReaction = getPillVal('marketReaction') || 'hold';
+  const riskAppetite = getPillVal('riskAppetite') || 'moderate';
+
+  const netCashFlow = income - expenses;
+  const growthAssets = v('astMf') + v('astShares') + v('astNps');
+
+  // ---- goals: future value + funding ----
+  const currentYear = new Date().getFullYear();
+  const goalsCalc = goals.map(g => {
+    const yearsLeft = Math.max((parseInt(g.targetYear) || currentYear) - currentYear, 0);
+    const todayAmt = parseFloat(g.amountToday) || 0;
+    const fv = goalFutureValue(todayAmt, yearsLeft);
+    return { ...g, yearsLeft, todayAmt, fv };
+  });
+  const totalFutureGoalCost = goalsCalc.reduce((s, g) => s + g.fv, 0);
+  const liquidInvestable = v('astMf') + v('astFd') + v('astShares') + v('astBank');
+  const goalFundingRatio = totalFutureGoalCost > 0 ? clamp((liquidInvestable / totalFutureGoalCost) * 100, 0, 100) : 100;
+
+  // ---- retirement corpus math ----
+  const requiredMonthlyAtRetirement = retireMonthlyExp * Math.pow(1 + expenseGrowth / 100, yearsToRetire) - pensionIncome;
+  const requiredAnnualAtRetirement = Math.max(requiredMonthlyAtRetirement, 0) * 12;
+  const requiredRetireCorpus = requiredAnnualAtRetirement * 25; // 4%-rule style multiplier
+  const projectedExistingCorpusAtRetirement = fvOfLumpsum(existingRetireCorpus, 8, yearsToRetire);
+  const retirementGap = Math.max(requiredRetireCorpus - projectedExistingCorpusAtRetirement, 0);
+  const retirementReadinessRatio = requiredRetireCorpus > 0 ? clamp((projectedExistingCorpusAtRetirement / requiredRetireCorpus) * 100, 0, 100) : 100;
+  const sipNeededForRetirement = retirementGap > 0 ? requiredSip(retirementGap, 12, yearsToRetire) : 0;
+
+  // ---- ratios ----
+  const savingsRatio = income > 0 ? (netCashFlow / income) * 100 : 0;
+  const expenseRatio = income > 0 ? (expenses / income) * 100 : 0;
+  const debtToIncomeRatio = income > 0 ? (v('expEmi') / income) * 100 : 0;
+  const liquidityRatio = expenses > 0 ? emergencyFund / expenses : 0;
+  const assetAllocationEquityPct = assets > 0 ? (growthAssets / assets) * 100 : 0;
+  const debtToAssetRatio = assets > 0 ? (liabilities / assets) * 100 : 0;
+
+  // ---- benchmark net worth (age-based rule of thumb) ----
+  const benchmarkNetWorth = Math.max((age - 22), 1) * income * 1.2;
+
+  // ============ SCORE DIMENSIONS (0-100 each) ============
+  const dimCashFlow = clamp((savingsRatio / 35) * 100);
+  const dimSavingsRate = clamp((savingsRatio / 20) * 100);
+  const dimEmergency = clamp((emergencyMonths / 6) * 100);
+  let dimInsurance = 0;
+  if (lifeInsYes || healthInsYes) {
+    const lifeScore = lifeInsYes ? clamp((lifeCover / Math.max(income * 12 * 10, 1)) * 100) : 0;
+    const familyCount = 1 + familyMembers.filter(f => f.dependent === 'yes').length;
+    const healthScore = healthInsYes ? clamp((healthCover / (familyCount * 500000)) * 100) : 0;
+    dimInsurance = (lifeScore + healthScore) / 2;
+  }
+  const dimDebt = clamp(100 - debtToIncomeRatio * 2.2);
+  const dimInvestment = clamp(assetAllocationEquityPct * 1.3 + (netCashFlow > 0 ? 10 : 0));
+  const dimNetWorth = clamp((netWorth / Math.max(benchmarkNetWorth, 1)) * 100);
+  const dimGoals = clamp(goalFundingRatio);
+  const dimRetirement = clamp(retirementReadinessRatio);
+  let dimRisk;
+  {
+    const appetiteScore = { conservative: 0, moderate: 1, aggressive: 2 }[riskAppetite];
+    const allocScore = assetAllocationEquityPct < 25 ? 0 : assetAllocationEquityPct < 55 ? 1 : 2;
+    const reactionAdj = marketReaction === 'sell' ? -20 : marketReaction === 'invest_more' ? 10 : 0;
+    dimRisk = clamp(100 - Math.abs(appetiteScore - allocScore) * 30 + reactionAdj);
+  }
+
+  const dimensions = [
+    { key: 'cashflow', label: 'Cash Flow Health', val: dimCashFlow, weight: 10 },
+    { key: 'savings', label: 'Savings Rate', val: dimSavingsRate, weight: 12 },
+    { key: 'emergency', label: 'Emergency Fund', val: dimEmergency, weight: 10 },
+    { key: 'insurance', label: 'Insurance Protection', val: dimInsurance, weight: 10 },
+    { key: 'debt', label: 'Debt Management', val: dimDebt, weight: 10 },
+    { key: 'investment', label: 'Investment Habits', val: dimInvestment, weight: 10 },
+    { key: 'networth', label: 'Net Worth', val: dimNetWorth, weight: 8 },
+    { key: 'goals', label: 'Goal Readiness', val: dimGoals, weight: 12 },
+    { key: 'retirement', label: 'Retirement Readiness', val: dimRetirement, weight: 13 },
+    { key: 'risk', label: 'Risk Alignment', val: dimRisk, weight: 5 },
+  ];
+  const totalWeight = dimensions.reduce((s, d) => s + d.weight, 0);
+  const overallScore = Math.round(dimensions.reduce((s, d) => s + d.val * d.weight, 0) / totalWeight);
+
+  // ============ RENDER ============
+  el('reportDate').textContent = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
+  el('reportClientName').textContent = clientName + "'s Wealth Reality Check";
+  el('reportClientMeta').textContent = `Age ${age} · ${marital === 'married' ? 'Married' : 'Single'} · ${city === 'metro' ? 'Metro' : city === 'tier1' ? 'Tier-1 City' : 'Tier-2/3 City'}`;
+
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  el('section-results').classList.add('active');
+  el('progressShell').style.display = 'none';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  setTimeout(() => animateScore(overallScore), 150);
+
+  // score tag
+  let tag, tagColor, tagBg, message;
+  if (overallScore >= 80) { tag = 'Excellent'; tagColor = '#22a06b'; tagBg = 'rgba(34,160,107,0.12)'; message = 'Your financial foundation is exceptionally strong. Focus now on optimisation and legacy planning.'; }
+  else if (overallScore >= 60) { tag = 'Healthy'; tagColor = '#2266a0'; tagBg = 'rgba(34,102,160,0.1)'; message = 'You are in a healthy financial position with a few gaps worth closing to reach the next level.'; }
+  else if (overallScore >= 40) { tag = 'Needs Improvement'; tagColor = '#e07b39'; tagBg = 'rgba(224,123,57,0.1)'; message = 'There are meaningful gaps in your financial plan that need structured attention over the next 6-12 months.'; }
+  else { tag = 'Critical'; tagColor = '#d63b3b'; tagBg = 'rgba(214,59,59,0.1)'; message = 'Your financial health needs urgent attention across multiple dimensions. Start with the priority action plan below.'; }
+  const tagEl = el('scoreTag');
+  tagEl.textContent = tag; tagEl.style.background = tagBg; tagEl.style.color = tagColor;
+  el('scoreMessage').textContent = message;
+
+  // dimension bars
+  el('dimGrid').innerHTML = dimensions.map(d => {
+    const col = d.val >= 70 ? '#22a06b' : d.val >= 40 ? '#2266a0' : '#e07b39';
+    return `
+    <div class="dim-row">
+      <div class="dim-top"><span class="dim-name">${d.label}</span><span class="dim-pct" style="color:${col}">${Math.round(d.val)}%</span></div>
+      <div class="dim-bar-outer"><div class="dim-bar-inner" data-val="${d.val}" style="background:${col}"></div></div>
+    </div>`;
+  }).join('');
+  setTimeout(() => document.querySelectorAll('.dim-bar-inner').forEach(b => b.style.width = b.dataset.val + '%'), 200);
+
+  // advanced metric cards
+  const metricsData = [
+    { label: 'Savings Ratio', value: savingsRatio.toFixed(1) + '%', sub: savingsRatio >= 20 ? 'Healthy' : 'Below 20% target', cls: savingsRatio >= 20 ? 'success' : 'warning' },
+    { label: 'Expense Ratio', value: expenseRatio.toFixed(1) + '%', sub: expenseRatio <= 60 ? 'Under control' : 'High burn rate', cls: expenseRatio <= 60 ? 'success' : 'warning' },
+    { label: 'Debt-to-Income', value: debtToIncomeRatio.toFixed(1) + '%', sub: debtToIncomeRatio <= 35 ? 'Manageable' : 'High EMI load', cls: debtToIncomeRatio <= 35 ? 'success' : 'danger' },
+    { label: 'Net Worth', value: fmt(netWorth), sub: netWorth >= 0 ? 'Positive' : 'Negative — liabilities exceed assets', cls: netWorth >= 0 ? 'success' : 'danger' },
+    { label: 'Liquidity Ratio', value: liquidityRatio.toFixed(1) + 'x', sub: 'Months of expenses in reserve', cls: liquidityRatio >= 6 ? 'success' : 'warning' },
+    { label: 'Emergency Months', value: emergencyMonths.toFixed(1), sub: emergencyMonths >= 6 ? 'Adequate' : 'Target: 6 months', cls: emergencyMonths >= 6 ? 'success' : 'warning' },
+    { label: 'Equity Allocation', value: assetAllocationEquityPct.toFixed(0) + '%', sub: 'MF + Shares + NPS share of assets', cls: '' },
+    { label: 'Goal Funding Ratio', value: goalFundingRatio.toFixed(0) + '%', sub: goalFundingRatio >= 70 ? 'On track' : 'Underfunded', cls: goalFundingRatio >= 70 ? 'success' : 'warning' },
+    { label: 'Retirement Gap', value: fmt(retirementGap), sub: retirementGap <= 0 ? 'Fully funded' : 'Additional corpus needed', cls: retirementGap <= 0 ? 'success' : 'danger' },
+    { label: 'Required Corpus', value: fmt(requiredRetireCorpus), sub: 'At retirement (age ' + retireAge + ')', cls: '' },
+    { label: 'Debt-to-Asset', value: debtToAssetRatio.toFixed(1) + '%', sub: debtToAssetRatio <= 40 ? 'Balanced' : 'Overleveraged', cls: debtToAssetRatio <= 40 ? 'success' : 'warning' },
+    { label: 'Total Future Goal Cost', value: fmt(totalFutureGoalCost), sub: 'Inflation-adjusted at 7%', cls: '' },
+  ];
+  el('metricsGrid').innerHTML = metricsData.map(m => `
+    <div class="metric-card ${m.cls}">
+      <div class="metric-label">${m.label}</div>
+      <div class="metric-value">${m.value}</div>
+      <div class="metric-sub">${m.sub}</div>
+    </div>`).join('');
+
+  // strengths
+  const strengths = [];
+  if (savingsRatio >= 20) strengths.push('Strong savings discipline — you are saving <strong>' + savingsRatio.toFixed(1) + '%</strong> of income, above the 20% healthy benchmark.');
+  if (debtToIncomeRatio <= 20) strengths.push('Low debt burden — EMIs consume only <strong>' + debtToIncomeRatio.toFixed(1) + '%</strong> of your income, well within safe limits.');
+  if (emergencyMonths >= 6) strengths.push('A well-funded emergency reserve covering <strong>' + emergencyMonths.toFixed(1) + ' months</strong> of expenses.');
+  if (lifeInsYes && healthInsYes) strengths.push('Both life and health insurance are in place, forming a base layer of protection.');
+  if (assetAllocationEquityPct >= 30 && assetAllocationEquityPct <= 70) strengths.push('A reasonably balanced portfolio with <strong>' + assetAllocationEquityPct.toFixed(0) + '%</strong> in growth-oriented instruments.');
+  if (netWorth > 0 && netWorth >= benchmarkNetWorth) strengths.push('Your net worth of <strong>' + fmt(netWorth) + '</strong> is ahead of the typical benchmark for your age and income.');
+  if (goalFundingRatio >= 70) strengths.push('Your goals are well-funded relative to their inflation-adjusted future cost.');
+  if (strengths.length === 0) strengths.push('You have taken the important first step of assessing your complete financial picture — that discipline itself is valuable.');
+  el('strengthsList').innerHTML = strengths.map(s => `<div class="insight-row"><div class="insight-icon good">✓</div><div class="insight-text">${s}</div></div>`).join('');
+
+  // weaknesses
+  const weaknesses = [];
+  if (savingsRatio < 20) weaknesses.push('Savings rate of <strong>' + savingsRatio.toFixed(1) + '%</strong> is below the recommended 20% — expenses are consuming too much of your income.');
+  if (emergencyMonths < 6) weaknesses.push('Emergency fund covers only <strong>' + emergencyMonths.toFixed(1) + ' months</strong> of expenses, below the recommended 6-month buffer.');
+  if (!lifeInsYes || (lifeInsYes && lifeCover < income * 120)) weaknesses.push('Life insurance cover is insufficient relative to income — the standard benchmark is ~10x annual income.');
+  if (!healthInsYes || (healthInsYes && healthCover < 500000)) weaknesses.push('Health insurance cover looks inadequate for your family size, especially given rising medical costs.');
+  if (debtToIncomeRatio > 35) weaknesses.push('EMI obligations consume <strong>' + debtToIncomeRatio.toFixed(1) + '%</strong> of income — a high debt-servicing ratio that limits flexibility.');
+  if (goalFundingRatio < 70) weaknesses.push('Your financial goals are underfunded relative to their future, inflation-adjusted cost.');
+  if (retirementReadinessRatio < 70) weaknesses.push('Retirement planning shows a projected shortfall of <strong>' + fmt(retirementGap) + '</strong> against your required corpus.');
+  if (assetAllocationEquityPct < 20 && riskAppetite !== 'conservative') weaknesses.push('Your portfolio is heavily skewed toward low-growth instruments despite a ' + riskAppetite + ' risk appetite.');
+  if (weaknesses.length === 0) weaknesses.push('No major red flags — continue reviewing your plan annually as income and goals evolve.');
+  el('weaknessesList').innerHTML = weaknesses.map(w => `<div class="insight-row"><div class="insight-icon ${weaknesses.length && w.includes('shortfall') ? 'bad' : 'warn'}">!</div><div class="insight-text">${w}</div></div>`).join('');
+
+  // priority action plan
+  const actions = [];
+  if (emergencyMonths < 6) actions.push('Build your emergency fund up to 6 months of expenses (' + fmt(expenses * 6) + ') in a liquid fund before increasing other investments.');
+  if (!healthInsYes || healthCover < 500000) actions.push('Secure or upgrade a family floater health insurance policy — target at least ₹5-10L cover.');
+  if (!lifeInsYes || lifeCover < income * 120) actions.push('Buy a pure term life insurance policy covering roughly 10-15x your annual income.');
+  if (debtToIncomeRatio > 35) actions.push('Prioritise paying down high-interest debt (credit cards, personal loans) before increasing investments.');
+  if (sipNeededForRetirement > 0) actions.push('Start or increase a retirement-focused SIP of approximately ' + fmt(sipNeededForRetirement) + '/month to close your retirement gap.');
+  if (goalFundingRatio < 70 && goalsCalc.length > 0) actions.push('Set up dedicated goal-based SIPs for your underfunded goals, prioritising high-priority items first.');
+  if (savingsRatio < 20) actions.push('Review discretionary spending (travel, leisure, other) to lift your savings rate toward 20%+.');
+  if (assetAllocationEquityPct < 25 && yearsToRetire > 7) actions.push('Given your time horizon, consider gradually increasing allocation to equity mutual funds for long-term growth.');
+  actions.push('Review this Wealth Reality Check every 12 months, or after any major life event.');
+  el('actionList').innerHTML = actions.slice(0, 7).map(a => `<div class="action-item"><div class="action-num"></div><div class="action-text">${a}</div></div>`).join('');
+
+  // investment recommendation — evaluate all four standard approaches
+  const hasLumpsumCash = liquidInvestable > income * 6;
+  const healthySurplus = netCashFlow > expenses * 0.10;
+  const combinedGap = retirementGap + Math.max(totalFutureGoalCost - liquidInvestable, 0);
+  const hasFundingGap = retirementGap > 0 || goalFundingRatio < 70;
+
+  // decide the single best-fit approach first (same underlying signals as before)
+  let primaryKey;
+  if (hasLumpsumCash && healthySurplus) primaryKey = 'combo';
+  else if (hasLumpsumCash && !healthySurplus) primaryKey = 'lumpsum';
+  else if (!hasLumpsumCash && healthySurplus && hasFundingGap && incomeGrowth >= 8) primaryKey = 'topup';
+  else if (healthySurplus) primaryKey = 'sip';
+  else primaryKey = netCashFlow > 0 ? 'sip' : 'lumpsum';
+
+  const approaches = [
+    {
+      key: 'sip', label: 'SIP Only',
+      recommendedReason: 'You generate a stable monthly surplus of ' + fmt(netCashFlow) + ', and your goals sit years away — a disciplined SIP builds wealth steadily without depending on a large existing lumpsum.',
+      partialReason: 'Your monthly surplus of ' + fmt(netCashFlow) + ' can support a SIP, though given your other resources it works better paired with a lumpsum or step-up structure than run on its own.',
+      notReason: 'Your monthly surplus is currently too thin (' + fmt(netCashFlow) + ') to sustain a meaningful ongoing SIP without strain — improving your savings rate or reducing debt should come first.',
+    },
+    {
+      key: 'topup', label: 'Top-up SIP',
+      recommendedReason: 'Your income is expected to grow at ' + incomeGrowth + '% a year, and you have a combined goal/retirement shortfall of roughly ' + fmt(combinedGap) + ' — stepping up contributions in line with income growth closes this gap faster than a flat SIP.',
+      partialReason: 'An annual top-up aligned to your ' + incomeGrowth + '% expected income growth is workable and would modestly accelerate your goals, though it is not essential given your current funding position.',
+      notReason: 'With limited expected income growth (' + incomeGrowth + '%) or no material funding gap, a step-up structure adds complexity without much added benefit right now.',
+    },
+    {
+      key: 'combo', label: 'SIP + Lumpsum',
+      recommendedReason: 'You hold surplus liquid assets of ' + fmt(liquidInvestable) + ' well beyond your emergency needs, and also generate a healthy monthly surplus of ' + fmt(netCashFlow) + ' — deploying the lumpsum now while running a parallel SIP captures both immediate compounding and disciplined ongoing investing.',
+      partialReason: 'You have some combination of idle cash and monthly surplus, so blending a lumpsum with a SIP is workable, though one approach alone may suit your situation just as well.',
+      notReason: 'You currently have neither significant idle lumpsum assets (' + fmt(liquidInvestable) + ') nor a healthy monthly surplus (' + fmt(netCashFlow) + '), so combining the two is not practical until one of them improves.',
+    },
+    {
+      key: 'lumpsum', label: 'Lumpsum Only',
+      recommendedReason: 'You are holding meaningful idle liquid assets (' + fmt(liquidInvestable) + ') beyond your emergency fund, with limited fresh monthly surplus (' + fmt(netCashFlow) + ') to run an ongoing SIP — deploying this capital now (ideally staggered via STP into equity over 6-12 months) puts it to work sooner rather than later.',
+      partialReason: 'You do hold surplus liquid assets (' + fmt(liquidInvestable) + '), so a lumpsum deployment is workable, but your ongoing monthly surplus means pairing it with a SIP will serve you better than a one-time investment alone.',
+      notReason: 'Since your investable capacity depends mainly on monthly income (' + fmt(netCashFlow) + ' surplus) rather than a large existing surplus (' + fmt(liquidInvestable) + '), a pure lumpsum approach is not appropriate for you right now.',
+    },
+  ];
+
+  const rows = approaches.map(a => {
+    let status, reason;
+    if (a.key === primaryKey) {
+      status = 'recommended'; reason = a.recommendedReason;
+    } else if (a.key === 'lumpsum' && !hasLumpsumCash) {
+      status = 'not'; reason = a.notReason;
+    } else if (a.key === 'sip' && !healthySurplus && netCashFlow <= 0) {
+      status = 'not'; reason = a.notReason;
+    } else if (a.key === 'topup' && (incomeGrowth < 5 || (!hasFundingGap && !healthySurplus))) {
+      status = 'not'; reason = a.notReason;
+    } else if (a.key === 'combo' && !hasLumpsumCash && !healthySurplus) {
+      status = 'not'; reason = a.notReason;
+    } else {
+      status = 'partial'; reason = a.partialReason;
+    }
+    return { ...a, status, reason };
+  });
+
+  const statusMeta = {
+    recommended: { icon: '✓', tag: 'Recommended', color: '#8fe0b8' },
+    partial: { icon: '○', tag: 'Partially Suitable', color: '#e8c97a' },
+    not: { icon: '✗', tag: 'Not Recommended', color: '#e89a9a' },
+  };
+
+  
+
+  // goals report table
+  if (goalsCalc.length === 0) {
+    el('goalsReportTable').innerHTML = '<tr><td style="padding:14px 8px;color:var(--muted);font-style:italic">No goals were added.</td></tr>';
+  } else {
+    el('goalsReportTable').innerHTML = `
+      <tr><th>Goal</th><th>Today's Cost</th><th>Future Cost</th><th>Years Left</th><th>Priority</th><th>Status</th></tr>
+      ${goalsCalc.map(g => {
+        const perGoalShare = totalFutureGoalCost > 0 ? (liquidInvestable * (g.fv / totalFutureGoalCost)) : 0;
+        const fundedPct = g.fv > 0 ? (perGoalShare / g.fv) * 100 : 100;
+        let statusClass = 'ok', statusText = 'On Track';
+        if (fundedPct < 40) { statusClass = 'critical'; statusText = 'Underfunded'; }
+        else if (fundedPct < 75) { statusClass = 'risk'; statusText = 'At Risk'; }
+        return `<tr>
+          <td><strong>${g.name || 'Untitled Goal'}</strong></td>
+          <td>${fmt(g.todayAmt)}</td>
+          <td>${fmt(g.fv)}</td>
+          <td>${g.yearsLeft}</td>
+          <td style="text-transform:capitalize">${g.priority}</td>
+          <td><span class="status-chip ${statusClass}">${statusText}</span></td>
+        </tr>`;
+      }).join('')}
+    `;
+  }
+
+  // retirement analysis block
+  el('retirementAnalysis').innerHTML = `
+    <div class="insight-row"><div class="insight-icon info" style="background:var(--primary-pale)">🏖️</div><div class="insight-text">You plan to retire at <strong>age ${retireAge}</strong>, ${yearsToRetire} years from now. At ${expenseGrowth}% expense inflation, your monthly household expense of ${fmt(retireMonthlyExp)} today will grow to approximately <strong>${fmt(retireMonthlyExp * Math.pow(1 + expenseGrowth / 100, yearsToRetire))}/month</strong> by then.</div></div>
+    <div class="insight-row"><div class="insight-icon info" style="background:var(--primary-pale)">💰</div><div class="insight-text">After accounting for expected pension income, you will need a retirement corpus of approximately <strong>${fmt(requiredRetireCorpus)}</strong> to sustain your lifestyle (using a 25x annual-expense rule).</div></div>
+    <div class="insight-row"><div class="insight-icon ${retirementGap <= 0 ? 'good' : 'bad'}">${retirementGap <= 0 ? '✓' : '⚠️'}</div><div class="insight-text">Your existing EPF, PPF and NPS corpus, projected forward at 8%, is estimated to reach <strong>${fmt(projectedExistingCorpusAtRetirement)}</strong> by retirement — ${retirementGap <= 0 ? 'this fully covers your requirement.' : 'leaving a gap of <strong>' + fmt(retirementGap) + '</strong> that will need a dedicated SIP of roughly <strong>' + fmt(sipNeededForRetirement) + '/month</strong> at 12% expected returns.'}</div></div>
+  `;
+}
+
+/* ============================================================
+   SCORE RING ANIMATION
+   ============================================================ */
+function animateScore(targetScore) {
+  const circle = el('scoreCircle');
+  const numEl = el('scoreNum');
+  const radius = 65;
+  const circ = 2 * Math.PI * radius;
+  let color;
+  if (targetScore >= 80) color = '#22a06b';
+  else if (targetScore >= 60) color = '#2266a0';
+  else if (targetScore >= 40) color = '#e07b39';
+  else color = '#d63b3b';
+  circle.style.stroke = color;
+  circle.style.strokeDashoffset = circ - (circ * targetScore / 100);
+  let current = 0;
+  const step = Math.max(targetScore / 60, 0.2);
+  const interval = setInterval(() => {
+    current = Math.min(current + step, targetScore);
+    numEl.textContent = Math.round(current);
+    if (current >= targetScore) clearInterval(interval);
+  }, 16);
+}
+
+/* ============================================================
+   INIT
+   ============================================================ */
+renderFamilyTable();
+renderGoalsTable();
+addFamilyMember();
+addGoal();
+</script>
+</body>
+</html>
