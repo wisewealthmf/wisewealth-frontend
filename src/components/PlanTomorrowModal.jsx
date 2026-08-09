@@ -188,10 +188,12 @@ const PlanTomorrowModal = ({
             >
               <option value="">Select Interest Type</option>
               <option value="mutual-fund">Mutual Fund Investment</option>
-              <option value="goal-planning">Goal Based Planning</option>
-              <option value="dream-goals">Dream Goals Planning</option>
+              <option value="goal-planning">Goal Based Planning</option> 
               <option value="portfolio-review">Portfolio Review</option>
               <option value="nri-support">NRI Investment Support</option>
+              <option value="fixed-deposits">Fixed Deposits</option>
+              <option value="public-offers">Public Offers</option>
+              <option value="loan-against-mutual-funds">Loan Against Mutual Funds</option>
               <option value="others">Others</option>
             </select>
           </div>

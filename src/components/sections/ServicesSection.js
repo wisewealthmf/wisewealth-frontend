@@ -16,30 +16,44 @@ const ServicesSection = () => {
     {
       id: 2,
       title: 'Goal-Based Planning',
-      subtitle: 'Home. Education. Marriage. Retirement.',
+      subtitle: 'Dream Home. Dream Wedding. Dream Car. Child\'s Education. Peaceful Retirement.',
       description: 'We build a plan around your actual life goals.',
       color: '#4a9fd8'
     },
     {
       id: 3,
-      title: 'Dream Goals',
-      subtitle: 'Dream car. Dream watch. Dream trip.',
-      description: "That moment you've been putting off. We help you invest so your dreams have a deadline — not just a wishlist.",
-      color: '#d4af37'
-    },
-    {
-      id: 4,
       title: 'Portfolio Review',
       subtitle: 'Already investing somewhere?',
       description: 'We review it, fix the gaps, and align it with where you want to go.',
       color: '#4caf50'
     },
     {
-      id: 5,
+      id: 4,
       title: 'NRI Investment Support',
       subtitle: 'Living abroad?',
       description: 'We make investing in India simple and guided — from wherever you are.',
       color: '#ff9800'
+    },
+    {
+      id: 5,
+      title: 'Fixed Deposits',
+      subtitle: 'Safety · Stability · Predictability',
+      description: 'Looking for stable returns? We help you explore FD options that fit your needs.',
+      color: '#795548'
+    },
+    {
+      id: 6,
+      title: 'Public Offers',
+      subtitle: 'Equity IPOs · SGBs · Debt IPOs',
+      description: 'Exploring public offers? We help you understand the opportunity, risks, and what fits your portfolio.',
+      color: '#9c27b0'
+    },
+    {
+      id: 7,
+      title: 'Loan Against Mutual Funds',
+      subtitle: 'Need funds without selling?',
+      description: 'Access liquidity against your mutual fund investments while keeping your investments intact.',
+      color: '#009688'
     }
   ];
 
