@@ -14,9 +14,9 @@ import Toast from "./Toast";
 import EmailVerifyField from "./EmailVerifyField";
 import "./AboutPage.css";
 import PlanTomorrowModal from "../components/PlanTomorrowModal";
-import COOImg from "../assets/niraj2.png";
-import daughterImg from "../assets/keshvi2.jpeg";
-import founderImg from "../assets/FounderImg.jpg";
+import COOImg from "../assets/father1.png";
+import daughterImg from "../assets/me.png";
+import founderImg from "../assets/mother.png";
 
 const AboutPage = () => {
   const [formData, setFormData] = useState({
@@ -216,10 +216,7 @@ const AboutPage = () => {
                 <h3>Corporate Career</h3>
 
                 <p>
-                  I didn't plan to build WiseWealth. Life pushed me toward it —
-                  and I'm grateful it did. I started out like most people: a
-                  steady job at a multinational company, a monthly salary, and a
-                  quiet curiosity about money.
+                I didn't plan to build WiseWealth. Life pushed me toward it — and I'm grateful it did. I started out like most people: a steady job at a multinational company, a monthly salary, and a quiet curiosity about money.
                 </p>
               </div>
             </div>
@@ -231,10 +228,7 @@ const AboutPage = () => {
                 <h3>Discovered Investing</h3>
 
                 <p>
-                  While everyone around me was spending, I was asking a
-                  different question — how do I make money work, even when I'm
-                  not?
-                </p>
+                While everyone around me was spending, I was asking a different question — how do I make money work, even when I'm not?                </p>
               </div>
             </div>
 
@@ -242,14 +236,10 @@ const AboutPage = () => {
               <div className="step-number2">03</div>
 
               <div className="step-content2">
-                <h3>Helping First Clients</h3>
+                <h3>Helping Clients First</h3>
 
                 <p>
-                  That curiosity led me to mutual funds. And then to something I
-                  didn't expect — the joy of helping others invest smarter. I
-                  started advising people on the side because watching someone
-                  take control of their financial future genuinely excited me.
-                </p>
+                That curiosity led me to mutual funds. And then to something I didn't expect — the joy of helping others invest smarter. I started helping people understand investing, and watching them take control of their financial future made me realise that this could become something much bigger.                </p>
               </div>
             </div>
 
@@ -257,15 +247,10 @@ const AboutPage = () => {
               <div className="step-number2">04</div>
 
               <div className="step-content2">
-                <h3>Career Turning Point</h3>
+                <h3>We Took the Leap</h3>
 
                 <p>
-                  Then came the moment that changed everything. I lost my job.
-                  For most people, that's a crisis. For me, it turned out to be
-                  an opportunity. Instead of running back to a salary, I went
-                  all in — on investing, on learning, on building something
-                  real. It wasn't easy. But it was honest.
-                </p>
+                Then came the moment that changed everything. I lost my job. For most people, that's a crisis. For us, it became a turning point. My wife and I decided to take the leap together. She pursued her NISM certification and took the responsibility of building the foundation of our mutual fund business, while I focused on clients, operations, and turning our vision into something real.                </p>
               </div>
             </div>
 
@@ -276,23 +261,33 @@ const AboutPage = () => {
                 <h3>WiseWealth Was Born</h3>
 
                 <p>
-                  That's how WiseWealth was born. Not in a boardroom. Not with
-                  funding. But with a passion, a purpose, and a few clients who
-                  trusted me before I had anything to show. Today, 250+ families
-                  and individuals trust WiseWealth with their financial goals.
-                  We're not the biggest name in the room. But we show up with
-                  something most big names have forgotten — genuine care for
-                  where your money takes you.
-                </p>
+                That's how WiseWealth was born. Not in a boardroom. Not with funding. But with a shared belief, a lot of learning, and the courage to build something of our own. What started with a few people who trusted us has grown into a journey where 250+ families and individuals trust WiseWealth with their financial goals.                </p>
 
                 <div className="story-quote">
-                  WiseWealth exists for one reason: because your financial
-                  dreams deserve more than a generic plan.
-                </div>
+                WiseWealth exists for one reason: because your financial dreams deserve more than a generic plan.                </div>
                 
               </div>
             </div>
-            <h3>- Niraj Rangwala, Founder</h3>
+
+            <div className="story-step2">
+              <div className="step-number2">05</div>
+
+              <div className="step-content2">
+                <h3>The Next Generation</h3>
+
+                <p>
+                After building WiseWealth with my wife, our journey took another meaningful turn when our child, Keshvi, decided to join us. </p>
+
+                <p>
+                She brought a fresh perspective, new ideas, and the drive to learn the business from the ground up. With her NISM certification and passion for finance, she is now helping us take WiseWealth into its next chapter.               </p>
+                
+                <div className="story-quote">
+                "What started with the two of us is now becoming a family legacy."     </div>
+
+              </div>
+            </div>
+            
+            <h3>- Niraj Rangwala, COO</h3>
           </div>
           
 
