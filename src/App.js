@@ -5,7 +5,6 @@ import HomePage from "./components/HomePage";
 import AboutPage from "./components/AboutPage";
 import ContactPage from "./components/ContactPage";
 import ToolsPage from "./components/ToolsPage";
-import EmailVerifiedPage from "./components/EmailVerifiedPage";
 import HomeAdmin from "./admin/components-admin/HomeAdmin";
 import LoginAdmin from "./admin/components-admin/LoginAdmin";
 import QueriesAdmin from "./admin/components-admin/QueriesAdmin";
@@ -22,7 +21,6 @@ function App() {
         <Route path="/about" element={<AboutPage />} />
         <Route path="/tools" element={<ToolsPage />} />
         <Route path="/contact" element={<ContactPage />} />
-        <Route path="/verify-email" element={<EmailVerifiedPage />} />
 
         {/* Admin Route */}
         <Route path="/admin" element={<LoginAdmin />} />

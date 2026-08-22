@@ -53,8 +53,6 @@ function HeroSection() {
     captcha: "",
   });
 
-  const [emailVerified, setEmailVerified] = useState(false);
-
   useEffect(() => {
     window.scrollTo({
       top: 0,
@@ -75,14 +73,6 @@ function HeroSection() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (!emailVerified) {
-      setToast({
-        message: "Please verify your email before submitting.",
-        type: "info",
-      });
-      return false;
-    }
 
     if (captchaAnswer !== captchaTarget) {
       setToast({
@@ -105,7 +95,6 @@ function HeroSection() {
         type: "success",
       });
       setFormData({ name: "", mobile: "", email: "", goal: "", captcha: "" });
-      setEmailVerified(false);
       refreshCaptcha();
       return true;
     } catch (error) {
@@ -260,8 +249,6 @@ function HeroSection() {
         captchaAnswer={captchaAnswer}
         setCaptchaAnswer={setCaptchaAnswer}
         refreshCaptcha={refreshCaptcha}
-        emailVerified={emailVerified}
-        onEmailVerifiedChange={setEmailVerified}
       />
       {toast && (
         <Toast

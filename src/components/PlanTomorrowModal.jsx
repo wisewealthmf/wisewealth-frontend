@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from "react";
 import { FaSyncAlt, FaTimes } from "react-icons/fa";
 import { createConsultation } from "../api";
 import Toast from "./Toast";
-import EmailVerifyField from "./EmailVerifyField";
 import "./PlanTomorrowModal.css";
 
 const PlanTomorrowModal = ({
@@ -16,30 +15,10 @@ const PlanTomorrowModal = ({
   captchaAnswer,
   setCaptchaAnswer,
   refreshCaptcha,
-  // email verification state lifted from parent (optional)
-  emailVerified: emailVerifiedProp,
-  onEmailVerifiedChange,
 }) => {
   const [toast, setToast] = useState(null);
-  // Local verified state used when the modal is standalone (no parent state)
-  const [localEmailVerified, setLocalEmailVerified] = useState(false);
   const closeTimerRef = useRef(null);
   const toastDuration = 3000;
-
-  // Use parent-lifted state when provided, otherwise local state
-  const emailVerified =
-    emailVerifiedProp !== undefined ? emailVerifiedProp : localEmailVerified;
-  const setEmailVerified = (val) => {
-    setLocalEmailVerified(val);
-    if (onEmailVerifiedChange) onEmailVerifiedChange(val);
-  };
-
-  // Reset local verified state whenever the modal is opened
-  useEffect(() => {
-    if (show) {
-      setLocalEmailVerified(false);
-    }
-  }, [show]);
 
   useEffect(() => {
     return () => {
@@ -58,14 +37,6 @@ const PlanTomorrowModal = ({
   const handleModalSubmit = async (e) => {
     e.preventDefault();
 
-    if (!emailVerified) {
-      setToast({
-        message: "Please verify your email before submitting.",
-        type: "info",
-      });
-      return;
-    }
-
     if (captchaAnswer !== captchaTarget) {
       setToast({
         message: "Please complete captcha correctly.",
@@ -83,8 +54,6 @@ const PlanTomorrowModal = ({
           message: "Thank you! Your consultation request has been submitted.",
           type: "success",
         });
-        setLocalEmailVerified(false);
-        if (onEmailVerifiedChange) onEmailVerifiedChange(false);
         refreshCaptcha();
       } else {
         await createConsultation({
@@ -106,8 +75,6 @@ const PlanTomorrowModal = ({
           handleInputChange({ target: { name: "email", value: "" } });
           handleInputChange({ target: { name: "goal", value: "" } });
         }
-        setLocalEmailVerified(false);
-        if (onEmailVerifiedChange) onEmailVerifiedChange(false);
         refreshCaptcha();
       }
 
@@ -167,13 +134,12 @@ const PlanTomorrowModal = ({
 
           <div className="form-group">
             <label>Email Address *</label>
-            <EmailVerifyField
+            <input
+              type="email"
+              name="email"
               value={formData.email}
               onChange={handleInputChange}
-              name="email"
               placeholder="Enter your email"
-              nameValue={formData.name}
-              onVerifiedChange={setEmailVerified}
               required
             />
           </div>
@@ -186,15 +152,15 @@ const PlanTomorrowModal = ({
               onChange={handleInputChange}
               required
             >
-              <option value="">Select Interest Type</option>
-              <option value="mutual-fund">Mutual Fund Investment</option>
-              <option value="goal-planning">Goal Based Planning</option> 
-              <option value="portfolio-review">Portfolio Review</option>
-              <option value="nri-support">NRI Investment Support</option>
-              <option value="fixed-deposits">Fixed Deposits</option>
-              <option value="public-offers">Public Offers</option>
-              <option value="loan-against-mutual-funds">Loan Against Mutual Funds</option>
-              <option value="others">Others</option>
+              <option value="">Select Interest Type *</option>
+                  <option value="mutual-fund">Mutual Fund Investment</option>
+                  <option value="goal-planning">Goal Based Planning</option> 
+                  <option value="portfolio-review">Portfolio Review</option>
+                  <option value="nri-support">NRI Investment Support</option>
+                  <option value="loan-against-mutual-funds">Loan Against Mutual Funds</option>
+                  <option value="public-offers">Public Offers</option>
+                  <option value="fixed-income">Fixed Income</option>
+                  <option value="others">Others</option>
             </select>
           </div>
 
@@ -231,8 +197,6 @@ const PlanTomorrowModal = ({
           <button
             type="submit"
             className="submit-wealth-plan"
-            disabled={!emailVerified}
-            title={!emailVerified ? "Please verify your email first" : undefined}
           >
             Plan My Tomorrow
           </button>

@@ -17,7 +17,6 @@ import PlanTomorrowModal from "../components/PlanTomorrowModal";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import Toast from "./Toast";
-import EmailVerifyField from "./EmailVerifyField";
 import "./ContactPage.css";
 
 const ContactPage = () => {
@@ -30,8 +29,6 @@ const ContactPage = () => {
     email: "",
     query: "",
   });
-  const [queryEmailVerified, setQueryEmailVerified] = useState(false);
-
   // ── Consultation form ───────────────────────────────────────────────────────
   const [consultFormData, setConsultFormData] = useState({
     name: "",
@@ -39,7 +36,6 @@ const ContactPage = () => {
     email: "",
     goal: "",
   });
-  const [consultEmailVerified, setConsultEmailVerified] = useState(false);
 
   const [showPlanModal, setShowPlanModal] = useState(false);
 
@@ -78,14 +74,6 @@ const ContactPage = () => {
   const handleQuerySubmit = async (e) => {
     e.preventDefault();
 
-    if (!queryEmailVerified) {
-      setToast({
-        message: "Please verify your email before submitting.",
-        type: "info",
-      });
-      return;
-    }
-
     try {
       await createQuery({
         name: queryFormData.name,
@@ -99,7 +87,6 @@ const ContactPage = () => {
         type: "success",
       });
       setQueryFormData({ name: "", mobile: "", email: "", query: "" });
-      setQueryEmailVerified(false);
       refreshCaptcha();
     } catch (error) {
       console.error(error);
@@ -112,14 +99,6 @@ const ContactPage = () => {
 
   const handleConsultationSubmit = async (e) => {
     e.preventDefault();
-
-    if (!consultEmailVerified) {
-      setToast({
-        message: "Please verify your email before submitting.",
-        type: "info",
-      });
-      return;
-    }
 
     if (captchaAnswer !== captchaTarget) {
       setToast({
@@ -142,7 +121,6 @@ const ContactPage = () => {
         type: "success",
       });
       setConsultFormData({ name: "", mobile: "", email: "", goal: "" });
-      setConsultEmailVerified(false);
       refreshCaptcha();
       return true;
     } catch (error) {
@@ -223,13 +201,13 @@ const ContactPage = () => {
 
               <div className="form-group">
                 <label htmlFor="query-email">Email Address *</label>
-                <EmailVerifyField
+                <input
+                  type="email"
+                  id="query-email"
+                  name="email"
                   value={queryFormData.email}
                   onChange={handleQueryInputChange}
-                  name="email"
                   placeholder="Enter your email"
-                  nameValue={queryFormData.name}
-                  onVerifiedChange={setQueryEmailVerified}
                   required
                 />
               </div>
@@ -250,12 +228,6 @@ const ContactPage = () => {
               <button
                 type="submit"
                 className="submit-wealth-plan"
-                disabled={!queryEmailVerified}
-                title={
-                  !queryEmailVerified
-                    ? "Please verify your email first"
-                    : undefined
-                }
               >
                 Submit
               </button>
@@ -312,13 +284,13 @@ const ContactPage = () => {
 
               <div className="form-group">
                 <label htmlFor="consult-email">Email Address *</label>
-                <EmailVerifyField
+                <input
+                  type="email"
+                  id="consult-email"
+                  name="email"
                   value={consultFormData.email}
                   onChange={handleConsultInputChange}
-                  name="email"
                   placeholder="Enter your email"
-                  nameValue={consultFormData.name}
-                  onVerifiedChange={setConsultEmailVerified}
                   required
                 />
               </div>
@@ -337,9 +309,9 @@ const ContactPage = () => {
                   <option value="goal-planning">Goal Based Planning</option> 
                   <option value="portfolio-review">Portfolio Review</option>
                   <option value="nri-support">NRI Investment Support</option>
-                  <option value="fixed-deposits">Fixed Deposits</option>
-                  <option value="public-offers">Public Offers</option>
                   <option value="loan-against-mutual-funds">Loan Against Mutual Funds</option>
+                  <option value="public-offers">Public Offers</option>
+                  <option value="fixed-income">Fixed Income</option>
                   <option value="others">Others</option>
                 </select>
               </div>
@@ -377,12 +349,6 @@ const ContactPage = () => {
               <button
                 type="submit"
                 className="submit-wealth-plan"
-                disabled={!consultEmailVerified}
-                title={
-                  !consultEmailVerified
-                    ? "Please verify your email first"
-                    : undefined
-                }
               >
                 Plan My Tomorrow
               </button>
@@ -477,8 +443,6 @@ const ContactPage = () => {
         captchaAnswer={captchaAnswer}
         setCaptchaAnswer={setCaptchaAnswer}
         refreshCaptcha={refreshCaptcha}
-        emailVerified={consultEmailVerified}
-        onEmailVerifiedChange={setConsultEmailVerified}
       />
 
       {toast && (

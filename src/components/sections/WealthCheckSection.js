@@ -64,8 +64,6 @@ const WealthCheckSection = () => {
     goal: "",
     captcha: "",
   });
-  const [emailVerified, setEmailVerified] = useState(false);
-
   useEffect(() => {
     window.scrollTo({
       top: 0,
@@ -88,14 +86,6 @@ const WealthCheckSection = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!emailVerified) {
-      setToast({
-        message: "Please verify your email before submitting.",
-        type: "info",
-      });
-      return false;
-    }
-
     if (captchaAnswer !== captchaTarget) {
       setToast({
         message: "Please complete captcha correctly.",
@@ -117,7 +107,6 @@ const WealthCheckSection = () => {
         type: "success",
       });
       setFormData({ name: "", mobile: "", email: "", goal: "", captcha: "" });
-      setEmailVerified(false);
       refreshCaptcha();
       return true;
     } catch (error) {
@@ -291,8 +280,6 @@ const WealthCheckSection = () => {
         captchaAnswer={captchaAnswer}
         setCaptchaAnswer={setCaptchaAnswer}
         refreshCaptcha={refreshCaptcha}
-        emailVerified={emailVerified}
-        onEmailVerifiedChange={setEmailVerified}
       />
       {toast && (
         <Toast

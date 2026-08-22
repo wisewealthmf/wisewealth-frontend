@@ -35,7 +35,7 @@ function LoginModal({ show, onClose }) {
         });
 
         setToast({
-          message: "Account created successfully. Please log in.",
+          message: "Account created successfully! You can now log in.",
           type: "success",
         });
         setIsSignup(false);

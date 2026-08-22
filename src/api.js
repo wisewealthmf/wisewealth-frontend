@@ -207,22 +207,6 @@ export async function createConsultation({
   return handleResponse(response);
 }
 
-export async function checkEmailVerified(email) {
-  const response = await fetch(
-    `${API_BASE_URL}/auth/check-email?email=${encodeURIComponent(email)}`
-  );
-  return handleResponse(response);
-}
-
-export async function resendVerificationEmail({ name = "", email }) {
-  const response = await fetch(`${API_BASE_URL}/auth/resend-verification`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ name, email }),
-  });
-  return handleResponse(response);
-}
-
 export async function registerUser({ name, email, password, phone = "" }) {
   const response = await fetch(`${API_BASE_URL}/auth/register`, {
     method: "POST",

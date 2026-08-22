@@ -10,7 +10,6 @@ import {
 
 import { createConsultation } from "../../api";
 import Toast from "../Toast";
-import EmailVerifyField from "../EmailVerifyField";
 import "./FAQSection.css";
 
 const FAQSection = () => {
@@ -23,8 +22,6 @@ const FAQSection = () => {
     interest: "",
     captcha: "",
   });
-  const [emailVerified, setEmailVerified] = useState(false);
-
   const faqs = [
     {
       question: "What is WiseWealth?",
@@ -76,14 +73,6 @@ const FAQSection = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!emailVerified) {
-      setToast({
-        message: "Please verify your email before submitting.",
-        type: "info",
-      });
-      return;
-    }
-
     if (captchaAnswer !== captchaTarget) {
       setToast({
         message: "Please complete captcha correctly.",
@@ -111,7 +100,6 @@ const FAQSection = () => {
         interest: "",
         captcha: "",
       });
-      setEmailVerified(false);
       refreshCaptcha();
     } catch (error) {
       console.error(error);
@@ -192,13 +180,12 @@ const FAQSection = () => {
                 onChange={handleChange}
                 required
               />
-              <EmailVerifyField
+              <input
+                type="email"
+                name="email"
                 value={formData.email}
                 onChange={handleChange}
-                name="email"
                 placeholder="Email *"
-                nameValue={formData.name}
-                onVerifiedChange={setEmailVerified}
                 required
               />
               <input
@@ -219,14 +206,14 @@ const FAQSection = () => {
                 required
               >
                 <option value="">Select Interest Type *</option>
-                <option value="mutual-fund">Mutual Fund Investment</option>
-                <option value="goal-planning">Goal Based Planning</option> 
-                <option value="portfolio-review">Portfolio Review</option>
-                <option value="nri-support">NRI Investment Support</option>
-                <option value="fixed-deposits">Fixed Deposits</option>
-                <option value="public-offers">Public Offers</option>
-                <option value="loan-against-mutual-funds">Loan Against Mutual Funds</option>
-                <option value="others">Others</option>
+                  <option value="mutual-fund">Mutual Fund Investment</option>
+                  <option value="goal-planning">Goal Based Planning</option> 
+                  <option value="portfolio-review">Portfolio Review</option>
+                  <option value="nri-support">NRI Investment Support</option>
+                  <option value="loan-against-mutual-funds">Loan Against Mutual Funds</option>
+                  <option value="public-offers">Public Offers</option>
+                  <option value="fixed-income">Fixed Income</option>
+                  <option value="others">Others</option>
               </select>
               <div className="captcha-box">
                 <div className="captcha-header">
@@ -262,8 +249,6 @@ const FAQSection = () => {
               <button
                 type="submit"
                 className="submit-button"
-                disabled={!emailVerified}
-                title={!emailVerified ? "Please verify your email first" : undefined}
               >
                 Submit
               </button>

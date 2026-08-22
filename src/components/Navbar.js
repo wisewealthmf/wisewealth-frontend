@@ -28,8 +28,6 @@ function Navbar() {
     goal: "",
     captcha: "",
   });
-  const [emailVerified, setEmailVerified] = useState(false);
-
   useEffect(() => {
     window.scrollTo({
       top: 0,
@@ -69,14 +67,6 @@ function Navbar() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!emailVerified) {
-      setToast({
-        message: "Please verify your email before submitting.",
-        type: "info",
-      });
-      return false;
-    }
-
     if (captchaAnswer !== captchaTarget) {
       setToast({
         message: "Please complete captcha correctly.",
@@ -94,7 +84,6 @@ function Navbar() {
         notes: "",
       });
       setFormData({ name: "", mobile: "", email: "", goal: "", captcha: "" });
-      setEmailVerified(false);
       refreshCaptcha();
       return true;
     } catch (error) {
@@ -161,12 +150,13 @@ function Navbar() {
               Book Free 1:1 Session
             </button>
           </a>
+          <a href="https://topmate.io/wisewealth/2182064?utm_source=public_profile&utm_capaign=wisewealth">
           <button
             className="navbar-btn navbar-btn-guide"
-            onClick={() => setShowFreeGuideModal(true)}
           >
             Get Free Guide
           </button>
+          </a>
         </div>
 
         {/* Hamburger icon — only visible on mobile */}
@@ -231,8 +221,6 @@ function Navbar() {
         captchaAnswer={captchaAnswer}
         setCaptchaAnswer={setCaptchaAnswer}
         refreshCaptcha={refreshCaptcha}
-        emailVerified={emailVerified}
-        onEmailVerifiedChange={setEmailVerified}
       />
       {toast && (
         <Toast

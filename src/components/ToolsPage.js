@@ -263,8 +263,6 @@ const ToolsPage = () => {
     goal: "",
     captcha: "",
   });
-  const [emailVerified, setEmailVerified] = useState(false);
-
   useEffect(() => {
     window.scrollTo({
       top: 0,
@@ -285,14 +283,6 @@ const ToolsPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (!emailVerified) {
-      setToast({
-        message: "Please verify your email before submitting.",
-        type: "info",
-      });
-      return false;
-    }
 
     if (captchaAnswer !== captchaTarget) {
       setToast({
@@ -315,7 +305,6 @@ const ToolsPage = () => {
         type: "success",
       });
       setFormData({ name: "", mobile: "", email: "", goal: "", captcha: "" });
-      setEmailVerified(false);
       refreshCaptcha();
       return true;
     } catch (error) {
@@ -1384,8 +1373,6 @@ const ToolsPage = () => {
         captchaAnswer={captchaAnswer}
         setCaptchaAnswer={setCaptchaAnswer}
         refreshCaptcha={refreshCaptcha}
-        emailVerified={emailVerified}
-        onEmailVerifiedChange={setEmailVerified}
       />
     </div>
   );

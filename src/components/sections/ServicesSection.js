@@ -36,10 +36,10 @@ const ServicesSection = () => {
     },
     {
       id: 5,
-      title: 'Fixed Deposits',
-      subtitle: 'Safety · Stability · Predictability',
-      description: 'Looking for stable returns? We help you explore FD options that fit your needs.',
-      color: '#795548'
+      title: 'Loan Against Mutual Funds',
+      subtitle: 'Need funds without selling?',
+      description: 'Access liquidity against your mutual fund investments while keeping your investments intact.',
+      color: '#009688'
     },
     {
       id: 6,
@@ -50,11 +50,13 @@ const ServicesSection = () => {
     },
     {
       id: 7,
-      title: 'Loan Against Mutual Funds',
-      subtitle: 'Need funds without selling?',
-      description: 'Access liquidity against your mutual fund investments while keeping your investments intact.',
-      color: '#009688'
-    }
+      title: 'Fixed Income',
+      subtitle: 'Stability · Predictability · Regular Income',
+      description: 'Explore fixed income options designed to provide stability, predictable returns, and regular income.',
+      color: '#795548'
+    },
+    
+    
   ];
 
   return (
