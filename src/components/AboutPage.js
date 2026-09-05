@@ -289,12 +289,7 @@ const AboutPage = () => {
 
             <div className="impact-card">
               <h3>250+</h3>
-              <p>Families Served</p>
-            </div>
-
-            <div className="impact-card">
-              <h3>₹25Cr+</h3>
-              <p>Assets Managed</p>
+              <p>Clients Connected</p>
             </div>
           </div>
         </div>
