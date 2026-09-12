@@ -180,16 +180,18 @@ const ToolsPage = () => {
   const calculateSIP = () => {
     const r = sipReturn / 100 / 12;
     const n = sipYears * 12;
-
-    const futureValue = sipAmount * ((Math.pow(1 + r, n) - 1) / r) * (1 + r);
-
-    const investedAmount = sipAmount * sipYears * 12;
-
+  
+    const futureValue =
+      sipAmount * ((Math.pow(1 + r, n) - 1) / r);
+  
+    const investedAmount = sipAmount * n;
+  
     setSipResult({
       futureValue,
       investedAmount,
       wealthGained: futureValue - investedAmount,
     });
+  
     scrollToResult();
   };
 
@@ -202,57 +204,123 @@ const ToolsPage = () => {
   const futureCost = (presentValue, inflationRate, years) => {
     return presentValue * Math.pow(1 + inflationRate / 100, years);
   };
-
+  
+  
+  // Regular SIP — assumes investment at the END of every month
   const monthlySIP = (targetCorpus, annualReturn, years) => {
-    const r = annualReturn / 100 / 12;
     const n = years * 12;
-
-    if (r === 0) return targetCorpus / n;
-
-    return (targetCorpus * r) / (Math.pow(1 + r, n) - 1);
+  
+    if (n <= 0) return 0;
+  
+    const r = annualReturn / 100 / 12;
+  
+    // No return
+    if (r === 0) {
+      return targetCorpus / n;
+    }
+  
+    const sipFactor =
+      (Math.pow(1 + r, n) - 1) / r;
+  
+    return targetCorpus / sipFactor;
   };
-
+  
+  
+  // Lump sum required today to reach target corpus
   const lumpsumToday = (targetCorpus, annualReturn, years) => {
-    return targetCorpus / Math.pow(1 + annualReturn / 100, years);
+    if (years <= 0) return targetCorpus;
+  
+    return targetCorpus /
+      Math.pow(1 + annualReturn / 100, years);
   };
-
+  
+  
+  // Step-Up SIP — SIP increases once every year
+  // Assumes all SIPs are invested at the END of each month
   const topupSIPStart = (
     targetCorpus,
     annualReturn,
     years,
     stepupRate = 10,
   ) => {
-    const r = annualReturn / 100 / 12;
     const n = years * 12;
+  
+    if (n <= 0) return 0;
+  
+    const r = annualReturn / 100 / 12;
     const g = stepupRate / 100;
-
-    let unitAccumulated = 0;
-
+  
+    let sipFactor = 0;
+  
     for (let m = 0; m < n; m++) {
       const year = Math.floor(m / 12);
-      const unitSIP = Math.pow(1 + g, year);
-
-      unitAccumulated += unitSIP * Math.pow(1 + r, n - m);
+  
+      // ₹1 SIP in the first year,
+      // ₹1 × (1 + step-up rate) in the second year, etc.
+      const stepUpMultiplier = Math.pow(1 + g, year);
+  
+      // End-of-month investment timing
+      const growthPeriods = n - m - 1;
+  
+      sipFactor +=
+        stepUpMultiplier *
+        Math.pow(1 + r, growthPeriods);
     }
-
-    return targetCorpus / unitAccumulated;
+  
+    return targetCorpus / sipFactor;
   };
-
-  const comboSIPAndLumpsum = (targetCorpus, annualReturn, years) => {
-    const ls = lumpsumToday(targetCorpus, annualReturn, years) * 0.5;
-
-    const lsGrown = ls * Math.pow(1 + annualReturn / 100, years);
-
-    const remaining = targetCorpus - lsGrown;
-
-    const sip = remaining > 0 ? monthlySIP(remaining, annualReturn, years) : 0;
-
+  
+  
+  // Combination of Lump Sum + SIP
+  const comboSIPAndLumpsum = (
+    targetCorpus,
+    annualReturn,
+    years,
+    lumpsumShare = 0.5,
+  ) => {
+    // Prevent invalid percentages
+    const safeLumpsumShare = Math.min(
+      Math.max(lumpsumShare, 0),
+      1
+    );
+  
+    // Amount required as a complete lump sum today
+    const fullLumpsumRequired = lumpsumToday(
+      targetCorpus,
+      annualReturn,
+      years
+    );
+  
+    // User contributes this portion as lump sum
+    const lumpsum =
+      fullLumpsumRequired * safeLumpsumShare;
+  
+    // Calculate its value at the target date
+    const lumpsumFutureValue =
+      lumpsum *
+      Math.pow(1 + annualReturn / 100, years);
+  
+    // Remaining target to be achieved through SIP
+    const remainingCorpus = Math.max(
+      0,
+      targetCorpus - lumpsumFutureValue
+    );
+  
+    // SIP required for the remaining target
+    const sip = monthlySIP(
+      remainingCorpus,
+      annualReturn,
+      years
+    );
+  
     return {
       sip,
-      lumpsum: ls,
+      lumpsum,
+      lumpsumFutureValue,
+      remainingCorpus,
     };
   };
-
+  
   const calculateGoal = () => {
     const fv = futureCost(Number(goalCost), Number(inflation), Number(years));
 
