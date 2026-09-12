@@ -129,24 +129,43 @@ const ToolsPage = () => {
   };
 
   const calculateSWP = () => {
-    const suggestedIncome = (swpCorpus * swpReturn) / 100 / 12;
-
+    const monthlyReturn = Math.pow(1 + swpReturn / 100, 1 / 12) - 1;
     const monthlyIncome =
-      swpIncome === "" ? suggestedIncome : Number(swpIncome);
-
+      swpIncome === "" ? (swpCorpus * swpReturn) / 100 / 12 : Number(swpIncome);
+  
+    let corpus = swpCorpus;
+    let totalWithdrawal = 0;
+  
+    const totalMonths = swpYears * 12;
+  
+    for (let month = 1; month <= totalMonths; month++) {
+      // Growth for the month
+      corpus = corpus * (1 + monthlyReturn);
+  
+      // Monthly withdrawal
+      corpus -= monthlyIncome;
+  
+      totalWithdrawal += monthlyIncome;
+  
+      // Corpus cannot go below zero
+      if (corpus <= 0) {
+        corpus = 0;
+        break;
+      }
+    }
+  
+    const growthAmount = corpus + totalWithdrawal - swpCorpus;
+  
     const withdrawalRate = (monthlyIncome * 12 * 100) / swpCorpus;
-
-    const futureValue = swpCorpus * Math.pow(1 + swpReturn / 100, swpYears);
-
-    const growthAmount = futureValue - swpCorpus;
-
+  
     setSwpResult({
       monthlyIncome,
       withdrawalRate,
-      suggestedIncome,
-      futureValue,
+      totalWithdrawal,
+      futureValue: corpus,
       growthAmount,
     });
+  
     scrollToResult();
   };
 
